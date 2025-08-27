@@ -9,6 +9,16 @@ public class practiceInput {
     System.out.print(obj);
   }
 
+  public static String askQuestionForString(Scanner scanner, String question) {
+    print(question);
+    return scanner.nextLine();
+  }
+
+  public static int askQuestionForInt(Scanner scanner, String question) {
+    print(question);
+    return scanner.nextInt();
+  }
+
   public static void sayHello(Scanner scanner) {
     println("What is your name?");
     print("Name: ");
@@ -50,8 +60,7 @@ public class practiceInput {
 
   public static String getAWord(Scanner scanner) {
     println("Input a word");
-    print("Word: ");
-    return scanner.nextLine();
+    return askQuestionForString(scanner, "Word: ");
   }
 
   public static void printWordsReversed(Scanner scanner) {
@@ -65,25 +74,54 @@ public class practiceInput {
 
   }
 
+  public static void printRectangle(int height, int width) {
+    print(" ");
+    
+    for (int widthIndex = 0; widthIndex < width*2; widthIndex++) {
+      print("_");
+    }
+    print(" ");
+    println("");
+
+    for (int heightIndex = 0; heightIndex < height; heightIndex++) {
+      print("|");
+      if (heightIndex != height - 1) {
+        for (int widthIndex = 0; widthIndex < width*2; widthIndex++) {
+          print(" ");
+        }
+      } else {
+        for (int widthIndex = 0; widthIndex < width*2; widthIndex++) {
+          print("_");
+        }
+      }
+      print("|");
+      println("");
+    }
+  }
+
   public static void printAreaOfRectangle(Scanner scanner) {
-    println("Length of the rectangle");
-    print("Length: ");
+    println("Height of the rectangle");
+    int rectangleHeight = askQuestionForInt(scanner, "Height: ");
+    println("Width of the rectangle");
+    int rectangleWidth = askQuestionForInt(scanner, "Width: ");
+
+    printRectangle(rectangleHeight, rectangleWidth);    
   }
 
   public static void main(String[] args) {
     Scanner scanner = new Scanner(System.in);
     
-    // sayHello(scanner);
-    // 
-    // repeatFavNumber(scanner);
-    // 
-    // calculateAverageTestScore(scanner);
-    // 
-    // print("Just press enter if you get stuck here");
-    // scanner.nextLine();
-    // println("");
-    // 
-    // printWordsReversed(scanner);
+    sayHello(scanner);
+    
+    repeatFavNumber(scanner);
+    
+    calculateAverageTestScore(scanner);
+    
+    print("Just press enter if you get stuck here");
+    scanner.nextLine();
+    println("");
+    
+    printWordsReversed(scanner);
 
     printAreaOfRectangle(scanner);
 
