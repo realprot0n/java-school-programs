@@ -122,7 +122,10 @@ public class practiceInput {
     println("Width of the rectangle");
     int rectangleWidth = askQuestionForInt(scanner, "Width: ");
 
-    printRectangle(rectangleHeight, rectangleWidth);    
+    printRectangle(rectangleHeight, rectangleWidth); 
+    
+    println("");
+    println(String.format("Area: %d", rectangleHeight*rectangleWidth));
   }
 
   public static void main(String[] args) {
