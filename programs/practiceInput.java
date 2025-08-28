@@ -71,10 +71,19 @@ public class practiceInput {
     println(wordThree);
     println(wordTwo);
     println(wordOne);
-
   }
 
   public static void printRectangle(int height, int width) {
+    boolean printedWidth = false;
+    for (int spaces = 0; spaces < width+2; spaces++) {
+      print(" ");
+      if (!printedWidth && spaces > width) {
+        printedWidth = true;
+        print(width);
+      }
+    }
+    println("");
+
     print(" ");
     
     for (int widthIndex = 0; widthIndex < width*2; widthIndex++) {
@@ -83,6 +92,7 @@ public class practiceInput {
     print(" ");
     println("");
 
+    boolean printedHeight = false;
     for (int heightIndex = 0; heightIndex < height; heightIndex++) {
       print("|");
       if (heightIndex != height - 1) {
@@ -95,6 +105,13 @@ public class practiceInput {
         }
       }
       print("|");
+
+      if (!printedHeight && heightIndex > height/2) {
+        printedHeight = true;
+        print(" ");
+        print(height);
+      }
+
       println("");
     }
   }
