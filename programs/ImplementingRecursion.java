@@ -10,13 +10,13 @@ public class ImplementingRecursion {
   }
 
   public static boolean isPrime(int num) {
-    double sqrtOfNum = Math.sqrt(num);
+    double sqrtOfNum =  Math.ceil(Math.sqrt(num));
 
     if (Math.abs(num) <= 2) {
       return true;
     }
 
-    for (int currNumb = 2; currNumb <= Math.ceil(sqrtOfNum); currNumb++) {
+    for (int currNumb = 2; currNumb <= sqrtOfNum; currNumb++) {
       if (num % currNumb == 0) {
         return false;
       }
