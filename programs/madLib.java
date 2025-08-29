@@ -11,22 +11,6 @@ public class madLib {
     System.out.println(str);
   }
   
-  public static void printArray(Object[] objects) {
-    int objectIndex = 0;
-    
-    print("[");
-    
-    for (Object obj : objects) {
-      objectIndex++;
-      print(obj);
-      if (objectIndex < objects.length) {
-        print(", ");
-      }
-    }
-    
-    println("]");
-  }
-  
   public static boolean isVowel(char character) {
     char[] vowels = {'a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U'};
     
