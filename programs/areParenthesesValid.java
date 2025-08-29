@@ -1,5 +1,5 @@
 public class areParenthesesValid {
-  public static void println(Object str) {
+  private static void println(Object str) {
     System.out.println(str);
   }
   
@@ -24,14 +24,46 @@ public class areParenthesesValid {
     return true;
   }
   
-  public static void printParenthesesValidity(String parentheses) {
-    println(String.format("\"%s\" => %s", parentheses, checkParenthesesValidity(parentheses)));
+  public static void printParenthesesValidity(String parentheses, int spaces) {
+    String spacerSpaces = "";
+
+    for (int i = 0; i < spaces-parentheses.length(); i++) {
+      spacerSpaces += " ";
+    }
+
+    println(String.format("\"%s\"%s=> %s", parentheses, spacerSpaces, checkParenthesesValidity(parentheses)));
+  }
+
+  private static int findLongestString(String[] strings) {
+    int longestString = 0;
+
+    for (String string : strings) {
+      if (string.length() > longestString) {
+        longestString = string.length();
+      }
+    }
+
+    return longestString;
+  }
+
+  public static void printManyParenthesesValidity(String[] parenthesesStrings) {
+    int longestParentheses = findLongestString(parenthesesStrings);
+
+    for (String parentheses : parenthesesStrings) {
+      printParenthesesValidity(parentheses, longestParentheses+1);
+    }
   }
   
   public static void main(String[] args) {
-    printParenthesesValidity("()");
-    printParenthesesValidity(")(()))");
-    printParenthesesValidity("(");
-    printParenthesesValidity("(())((()())())");
+    String[] parentheseses = {
+      "()",
+      ")(()))",
+      "(",
+      "(())((()())())",
+      ")(",
+      "()(()())((()(()()))()())"
+    };
+
+    printManyParenthesesValidity(parentheseses);
   }
 }

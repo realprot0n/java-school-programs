@@ -66,22 +66,31 @@ public class madLib {
     println(getAnswer("name 1") + " and " + getAnswer("name 2") + " thought that all of their data was permanently " + getAnswer("adjective 1") + ", but the foolish " + getAnswer("animal/person 1") + " saved all the data to a USB drive in their backpack, along with the fool's " + getAnswer("thing you would find in a backpack 1") + " and " + getAnswer("thing you would find in a backpack 2") + ".");
     println("So, all the two had to do was " + getAnswer("verb 3") + " the data from the USB onto their computer and the " + getAnswer("noun 1") + " was saved!!!!!!!!");
   }
-  
-  public static void main(String[] args) {
-    Scanner scanner = new Scanner(System.in);
-    
+
+  public static void startMadLib(Scanner scanner) { 
     String[] questions = {"color 1", "name 1", "name 2", "food establishment 1", "animal/person 1", "communication device 1", "transportation method 1", "body part 1", "edible thing 1", "color 2", "vehicle 1", "vehicle 2", 
                           "address 1", "verb 1", "verb 2", "a thing you would use money for 1", "adjective 1", "thing you would find in a backpack 1", "thing you would find in a backpack 2", "verb 3", "noun 1"};
     
     for (String question : questions) {
       answers.put(question, askUserQuestion(scanner, "Give " + question + ": "));
     }
-    
-    scanner.close();
-    
+
     println("\nYour answers:");
     println(answers);
+    println("");
     
     printMadLib();
+
+    if (askUserQuestion(scanner, "Do you want to play again? (y/n) ").equals("y")) {
+      startMadLib(scanner);
+    }
+  }
+  
+  public static void main(String[] args) {
+    Scanner scanner = new Scanner(System.in);
+
+    startMadLib(scanner);
+    
+    scanner.close();
   }
 }
