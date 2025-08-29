@@ -62,9 +62,9 @@ public class ImplementingRecursion {
         continue;
       }
 
-      print(i);
-      print(": ");
-      println(a);
+      println(i);
+      //println(": ");
+      //println(a);
     }
   }
 }
