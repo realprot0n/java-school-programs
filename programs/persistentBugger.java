@@ -21,7 +21,7 @@ public class persistentBugger {
     long result = 1;
 
     for (char digitChar : String.valueOf(number).toCharArray()) {
-      result = result * (digitChar - '0');
+      result = result * charIntoInt(digitChar);
     }
 
     return persistenceRecursion(result, level) + 1;
