@@ -1,6 +1,5 @@
 import java.util.ArrayList;
 import java.util.List;
-import java.lang.instrument.Instrumentation;
 
 enum Direction {
   LEFT,
@@ -21,10 +20,6 @@ class Output {
   public static void print(Object obj) {
     System.out.print(obj);
   }
-  
-  public static void printerr(Object obj) {
-    System.err.println(obj);
-  }
 }
 
 class Position {
@@ -35,9 +30,9 @@ class Position {
     y = setY;
   }
   
-  public Position(int[] position) {
+  public Position(int[] position) throws IllegalArgumentException {
     if (position.length != 2) {
-      Output.printerr("Position array must be 2 ints long");
+      throw new IllegalArgumentException("Position array must be 2 ints long");
     }
     
     x = position[0];
@@ -129,10 +124,10 @@ class Ship {
   public Position position;
   public int shipID;
 
-  public Ship(int setLength, String shipName) {
+  public Ship(int setLength, String shipName) throws IllegalArgumentException {
     
     if (length <= 0) {
-      Output.printerr("Ship length must be more than 0.");
+      throw new IllegalArgumentException("Ship length must be more than 0.");
     }
     length = setLength;
 
@@ -196,7 +191,7 @@ class Grid {
   public void printState(boolean printLabels, boolean reveal) {
   if (printLabels) {
     for (int xIndex = 0; xIndex < width; xIndex++) {
-      Output.print(String.valueOf(xIndex) + ' ');
+      Output.print(String.valueOf(xIndex) + " ");
     }
     Output.println();
   }
@@ -215,7 +210,7 @@ class Grid {
       
       }
       if (printLabels) {
-        Output.print(' ' + rowLabels[yIndex]);
+        Output.print(" " + rowLabels[yIndex]);
       }
       Output.println();
     }
@@ -227,5 +222,10 @@ public class Battleship {
   public static void main(String[] args) {
     Grid grid = new Grid(10);
     grid.printState(true);
+  }
+
+
+  public static void startGame() {
+    
   }
 }
