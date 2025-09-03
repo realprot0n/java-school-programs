@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.lang.instrument.Instrumentation;
 
 enum Direction {
   LEFT,
@@ -138,7 +139,7 @@ class Ship {
     position = Position.getDefault();
   }
 
-  public List<Position> getOccupiedSquares() {
+  public List<Position> getOccupiedSquaresPositions() {
     List<Position> returnSquares = new ArrayList<>();
     Position deltaPosition = position;
 
@@ -155,8 +156,9 @@ class Grid {
   public int width, height;
 
   public final char[] rowLabels = {
-    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'
+    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P'
   };
+  
 
   public Grid(int size) {
     width = size;
@@ -179,7 +181,7 @@ class Grid {
     char squareChar = getSquareAt(position).getAsChar();
     Output.print(squareChar);
     if (includeSpace) {
-      Output.print(" ");
+      Output.print(' ');
     }
   }
 
@@ -192,17 +194,28 @@ class Grid {
   }
 
   public void printState(boolean printLabels, boolean reveal) {
+  if (printLabels) {
     for (int xIndex = 0; xIndex < width; xIndex++) {
-      for (int yIndex = 0; yIndex < height; yIndex++) {
-        if (reveal) {
-          squares[xIndex][yIndex].reveal();
-        }
+      Output.print(String.valueOf(xIndex) + ' ');
+    }
+    Output.println();
+  }
 
-        printSquareAt(new Position(xIndex, yIndex));
-
+    for (int yIndex = 0; yIndex < height; yIndex++) {
+      for (int xIndex = 0; xIndex < width; xIndex++) {
         if (reveal) {
-          squares[xIndex][yIndex].hide();
+          squares[yIndex][xIndex].reveal();
         }
+        
+        printSquareAt(new Position(yIndex, xIndex));
+        
+        if (reveal) {
+          squares[yIndex][xIndex].hide();
+        }
+      
+      }
+      if (printLabels) {
+        Output.print(' ' + rowLabels[yIndex]);
       }
       Output.println();
     }
