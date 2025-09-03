@@ -103,17 +103,17 @@ class Cell {
 }
 
 class Field {
-  int width, length;
+  int width, height;
   Cell[][] board;
 
-  public Field(int setWidth, int setLength) {
+  public Field(int setWidth, int setHeight) {
     width = setWidth;
-    length = setLength;
+    height = setHeight;
 
-    board = new Cell[setWidth][setLength];
+    board = new Cell[setWidth][setHeight];
 
-    for (int xIndex = 0; xIndex < length; xIndex++) {
-      for (int yIndex = 0; yIndex < length; yIndex++) {
+    for (int xIndex = 0; xIndex < width; xIndex++) {
+      for (int yIndex = 0; yIndex < height; yIndex++) {
         board[xIndex][yIndex] = new Cell();
       }
     }
@@ -127,11 +127,21 @@ class Field {
 class GameLogic {
   public Field field;
   
-  public void calcCellsNeighbors(Position position) {
-    
+  public GameLogic() {
+    field = new Field(10);
   }
 
-  public calculateAll
+  public void calcCellsNeighbors(Position position) {
+   
+  }
+
+  public void calculateAllNeighbors() {
+    for (int xIndex = 0; xIndex < field.width; xIndex++) {
+      for (int yIndex= 0; yIndex < field.height; yIndex++) {
+        calcCellsNeighbors(new Position(xIndex, yIndex));
+      }
+    }
+  }
 }
 
 public class Minesweeper {
