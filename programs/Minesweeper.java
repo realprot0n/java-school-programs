@@ -1,3 +1,5 @@
+import java.util.Scanner;
+
 class Output {
   public static void println(Object obj) {
     System.out.println(obj);
@@ -12,9 +14,40 @@ class Output {
   }
 }
 
+class Input {
+  public static Scanner scanner;
+  static boolean initialized = false;
+
+  public static void initialize() {
+    if (initialized) {
+      return;
+    }
+    scanner = new Scanner(System.in);
+    initialized = true;
+  }
+
+  public static int askForInt(String stem) {
+    Output.print(stem);
+    return scanner.nextInt();
+  }
+
+  public static String askForString(String stem) {
+    Output.print(stem);
+    return scanner.nextLine();
+  }
+}
+
 class BasicArithmetic {
   public static byte boolToByte(boolean bool) {
     return (byte) (bool ? 1 : 0);
+  }
+
+  public static byte getRandomByte() {
+    return (byte) (Math.random()*256);
+  }
+
+  public static byte getRandomByte(byte max) {
+    return (byte) (getRandomByte() % max);
   }
 }
 
@@ -73,9 +106,9 @@ class Position {
 }
 
 class Cell {
-  static int numbOfCells;
-  static int numbOfMines;
-  static int numbOfFlags;
+  static int numbOfCells = 0 ;
+  static int numbOfMines = 0;
+  static int numbOfFlags = 0;
   boolean isMine;
   boolean revealed;
   boolean flagged;
@@ -106,6 +139,15 @@ class Cell {
 
     return (char) (neighborMines + '0');
   }
+
+  public void attemptTurnIntoMine() {
+    if (isMine) {
+      return;
+    }
+
+    isMine = true;
+    numbOfMines += 1;
+  }
 }
 
 class Field {
@@ -127,6 +169,23 @@ class Field {
   
   public Field(int size) {
     this(size, size);
+  }
+
+  public boolean attemptToAddMines(int amountOfMines) {
+    if (amountOfMines > width*height) {
+      return false;
+    }
+    
+    byte randomX, randomY;
+    
+    while (Cell.numbOfMines < amountOfMines) {
+      randomX = BasicArithmetic.getRandomByte((byte) width);
+      randomY = BasicArithmetic.getRandomByte((byte) height);
+
+      board[randomX][randomY].attemptTurnIntoMine();
+    }
+
+    return true;
   }
 }
 
@@ -170,6 +229,10 @@ class GameLogic {
         calcCellsNeighbors(new Position(xIndex, yIndex));
       }
     }
+  }
+
+  public void gameLogic() {
+    
   }
 }
 
