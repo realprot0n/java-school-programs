@@ -12,6 +12,12 @@ class Output {
   }
 }
 
+class BasicArithmetic {
+  public static byte boolToByte(boolean bool) {
+    return (byte) (bool ? 1 : 0);
+  }
+}
+
 class Position {
   int x, y;
   
@@ -73,7 +79,7 @@ class Cell {
   boolean isMine;
   boolean revealed;
   boolean flagged;
-  int neighborMines;
+  byte neighborMines;
 
   public Cell() {
     numbOfCells += 1;
@@ -130,11 +136,34 @@ class GameLogic {
   public GameLogic() {
     field = new Field(10);
   }
-
-  public void calcCellsNeighbors(Position position) {
-   
+  
+  public byte isCellAMine(Position position) {
+    if ((position.x > field.width) || (position.x < 0)) {
+      return 0;
+    } else if ((position.y > field.height) || (position.y < 0)) {
+      return 0;
+    }
+    
+    return BasicArithmetic.boolToByte(field.board[position.x][position.y].isMine);
   }
-
+  
+  
+  
+  public void calcCellsNeighbors(Position position) {
+    Cell currentCell = field.board[position.x][position.y];
+    byte foundMines = 0;
+    for (int xIndex = 0; xIndex < field.width; xIndex++) {
+      foundMines += isCellAMine(new Position(position.x + xIndex, position.y + 1));
+    }
+    foundMines += isCellAMine(new Position(position.x - 1, position.y));
+    foundMines += isCellAMine(new Position(position.x + 1, position.y));
+    
+    for (int xIndex = 0; xIndex < field.width; xIndex++) {
+      foundMines += isCellAMine(new Position(position.x + xIndex, position.y + 1));
+    }
+    currentCell.neighborMines = foundMines;
+  }
+  
   public void calculateAllNeighbors() {
     for (int xIndex = 0; xIndex < field.width; xIndex++) {
       for (int yIndex= 0; yIndex < field.height; yIndex++) {
@@ -146,6 +175,7 @@ class GameLogic {
 
 public class Minesweeper {
   public static void main(String[] args) {
-
+    GameLogic game = new GameLogic();
+    
   }
 }
