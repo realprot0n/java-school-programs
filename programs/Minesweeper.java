@@ -57,6 +57,14 @@ class BasicArithmetic {
   public static byte getRandomByte(byte max) {
     return (byte) (getRandomByte() % max);
   }
+
+  public static String intIntoTwoWide(int integer) {
+    if ((integer < 10) && (integer >= 0)) {
+      return integer + " ";
+    }
+
+    return String.valueOf(integer);
+  }
 }
 
 class Position {
@@ -129,9 +137,9 @@ class Cell {
   }
   
   public char getAsChar() {
-    if (!revealed) {
-      return '#';
-    }
+    //if (!revealed) {
+    //  return '#';
+    //}
 
     if (flagged) {
       return 'F';
@@ -197,13 +205,27 @@ class Field {
   }
 
   public void printBoard() {
-    //TODO: this fun c
+    Output.print("   ");
+    for (int xIndex = 0; xIndex < width; xIndex++) {
+      Output.print(BasicArithmetic.intIntoTwoWide(xIndex));
+    }
+    Output.println();
+
+    for (int yIndex = 0; yIndex < height; yIndex++) {
+      Output.print(BasicArithmetic.intIntoTwoWide(yIndex) + " ");
+      for (int xIndex = 0; xIndex < width; xIndex++) {
+        Output.print(board[yIndex][xIndex].getAsChar());
+        Output.print(" ");
+      }
+      Output.println();
+    }
   }
 }
 
 class GameLogic {
   public Field field;
-  
+  boolean playingRound = false;
+
   public GameLogic(int width, int height) {
     field = new Field(width, height);
   }
@@ -223,14 +245,14 @@ class GameLogic {
   public void calcCellsNeighbors(Position position) {
     Cell currentCell = field.board[position.x][position.y];
     byte foundMines = 0;
-    for (int xIndex = 0; xIndex < field.width; xIndex++) {
+    for (int xIndex = -1; xIndex <= 1; xIndex++) {
       foundMines += isCellAMine(new Position(position.x + xIndex, position.y + 1));
     }
     foundMines += isCellAMine(new Position(position.x - 1, position.y));
     foundMines += isCellAMine(new Position(position.x + 1, position.y));
     
-    for (int xIndex = 0; xIndex < field.width; xIndex++) {
-      foundMines += isCellAMine(new Position(position.x + xIndex, position.y + 1));
+    for (int xIndex = -1; xIndex <= 1; xIndex++) {
+      foundMines += isCellAMine(new Position(position.x + xIndex, position.y - 1));
     }
     currentCell.neighborMines = foundMines;
   }
@@ -243,10 +265,19 @@ class GameLogic {
     }
   }
 
+  public void gameLoop() {
+    playingRound = true;
+    while (playingRound) {
+
+    }
+  }
+
   public void startGame() {
-    double percentageOfMines = Input.askForInt("Percentage of mines?\n%") / 100d;
+    double percentageOfMines = Input.askForInt("Percentage of mines? %") / 100d;
     field.attemptToAddMines((int) (percentageOfMines * field.width * field.height));
     calculateAllNeighbors();
+
+    field.printBoard();
   }
 }
 
