@@ -42,6 +42,14 @@ class BasicArithmetic {
     return (byte) (bool ? 1 : 0);
   }
 
+  public static int getRandomInt() {
+    return (int) (Math.random() * Integer.MAX_VALUE);
+  }
+
+  public static int getRandomInt(int max) {
+    return getRandomInt() % max;
+  }
+
   public static byte getRandomByte() {
     return (byte) (Math.random()*256);
   }
@@ -176,30 +184,34 @@ class Field {
       return false;
     }
     
-    byte randomX, randomY;
+    int randomX, randomY;
     
     while (Cell.numbOfMines < amountOfMines) {
-      randomX = BasicArithmetic.getRandomByte((byte) width);
-      randomY = BasicArithmetic.getRandomByte((byte) height);
+      randomX = BasicArithmetic.getRandomInt(width);
+      randomY = BasicArithmetic.getRandomInt(height);
 
       board[randomX][randomY].attemptTurnIntoMine();
     }
 
     return true;
   }
+
+  public void printBoard() {
+    //TODO: this fun c
+  }
 }
 
 class GameLogic {
   public Field field;
   
-  public GameLogic() {
-    field = new Field(10);
+  public GameLogic(int width, int height) {
+    field = new Field(width, height);
   }
   
   public byte isCellAMine(Position position) {
-    if ((position.x > field.width) || (position.x < 0)) {
+    if ((position.x >= field.width) || (position.x < 0)) {
       return 0;
-    } else if ((position.y > field.height) || (position.y < 0)) {
+    } else if ((position.y >= field.height) || (position.y < 0)) {
       return 0;
     }
     
@@ -231,14 +243,20 @@ class GameLogic {
     }
   }
 
-  public void gameLogic() {
-    
+  public void startGame() {
+    double percentageOfMines = Input.askForInt("Percentage of mines?\n%") / 100d;
+    field.attemptToAddMines((int) (percentageOfMines * field.width * field.height));
+    calculateAllNeighbors();
   }
 }
 
 public class Minesweeper {
   public static void main(String[] args) {
-    GameLogic game = new GameLogic();
+    Input.initialize();
+    int width = Input.askForInt("Width? ");
+    int height = Input.askForInt("Height? ");
+    GameLogic game = new GameLogic(width, height);
     
+    game.startGame();
   }
 }
