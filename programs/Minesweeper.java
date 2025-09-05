@@ -27,11 +27,17 @@ class Input {
   }
 
   public static int askForInt(String stem) {
+    if (scanner == null) {
+      return -1;
+    }
     Output.print(stem);
     return scanner.nextInt();
   }
 
   public static String askForString(String stem) {
+    if (scanner == null) {
+      return null;
+    }
     Output.print(stem);
     return scanner.nextLine();
   }
@@ -65,6 +71,13 @@ class BasicArithmetic {
 
     return String.valueOf(integer);
   }
+}
+
+enum Direction {
+  LEFT,
+  UP,
+  RIGHT,
+  DOWN
 }
 
 class Position {
@@ -214,7 +227,7 @@ class Field {
     for (int yIndex = 0; yIndex < height; yIndex++) {
       Output.print(BasicArithmetic.intIntoTwoWide(yIndex) + " ");
       for (int xIndex = 0; xIndex < width; xIndex++) {
-        Output.print(board[yIndex][xIndex].getAsChar());
+        Output.print(board[xIndex][yIndex].getAsChar());
         Output.print(" ");
       }
       Output.println();
@@ -268,7 +281,7 @@ class GameLogic {
   public void gameLoop() {
     playingRound = true;
     while (playingRound) {
-
+      playingRound = false;
     }
   }
 
