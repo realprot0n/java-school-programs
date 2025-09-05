@@ -22,15 +22,15 @@ class Output {
   }
 }
 
-class Position {
+class Positions {
   int x, y;
   
-  public Position(int setX, int setY) {
+  public Positions(int setX, int setY) {
     x = setX;
     y = setY;
   }
   
-  public Position(int[] position) throws IllegalArgumentException {
+  public Positions(int[] position) throws IllegalArgumentException {
     if (position.length != 2) {
       throw new IllegalArgumentException("Position array must be 2 ints long");
     }
@@ -39,19 +39,19 @@ class Position {
     y = position[1];
   }
 
-  public static Position getDefault() {
-    return new Position(-1, -1);
+  public static Positions getDefault() {
+    return new Positions(-1, -1);
   }
 
-  public Position addDirection(Direction direction) {
+  public Positions addDirection(Direction direction) {
     return addDirection(direction, 1);
   }
 
-  public Position addDirection(Direction direction, int amount) {
-    return addDirection(direction, amount, new Position(x, y));
+  public Positions addDirection(Direction direction, int amount) {
+    return addDirection(direction, amount, new Positions(x, y));
   }
   
-  public Position addDirection(Direction direction, int amount, Position position) {
+  public Positions addDirection(Direction direction, int amount, Positions position) {
     if (direction.equals(Direction.LEFT)) {
       position.x -= amount;
     } else if (direction.equals(Direction.RIGHT)) {
@@ -70,7 +70,7 @@ class Position {
   }
 
   public void addDirectionToSelf(Direction direction, int amount) {
-    Position newPosition = addDirection(direction, amount, new Position(x, y));
+    Positions newPosition = addDirection(direction, amount, new Positions(x, y));
     x = newPosition.x;
     y = newPosition.y;
   }
@@ -121,7 +121,7 @@ class Ship {
   public int length;
   public Direction direction;
   public String name;
-  public Position position;
+  public Positions position;
   public int shipID;
 
   public Ship(int setLength, String shipName) throws IllegalArgumentException {
@@ -131,12 +131,12 @@ class Ship {
     }
     length = setLength;
 
-    position = Position.getDefault();
+    position = Positions.getDefault();
   }
 
-  public List<Position> getOccupiedSquaresPositions() {
-    List<Position> returnSquares = new ArrayList<>();
-    Position deltaPosition = position;
+  public List<Positions> getOccupiedSquaresPositions() {
+    List<Positions> returnSquares = new ArrayList<>();
+    Positions deltaPosition = position;
 
     for (int squareIndex = 0; squareIndex < length; squareIndex++) {
       returnSquares.add(deltaPosition.addDirection(direction, squareIndex));
@@ -168,11 +168,11 @@ class Grid {
     }
   }
 
-  public GridSquare getSquareAt(Position position) {
+  public GridSquare getSquareAt(Positions position) {
     return squares[position.x][position.y];
   }
 
-  public void printSquareAt(Position position, boolean includeSpace) {
+  public void printSquareAt(Positions position, boolean includeSpace) {
     char squareChar = getSquareAt(position).getAsChar();
     Output.print(squareChar);
     if (includeSpace) {
@@ -180,7 +180,7 @@ class Grid {
     }
   }
 
-  public void printSquareAt(Position position) {
+  public void printSquareAt(Positions position) {
     printSquareAt(position, true);
   }
 
@@ -202,7 +202,7 @@ class Grid {
           squares[yIndex][xIndex].reveal();
         }
         
-        printSquareAt(new Position(yIndex, xIndex));
+        printSquareAt(new Positions(yIndex, xIndex));
         
         if (reveal) {
           squares[yIndex][xIndex].hide();

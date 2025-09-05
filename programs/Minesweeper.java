@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import java.util.Arrays;
 
 class Output {
   public static void println(Object obj) {
@@ -34,12 +35,30 @@ class Input {
     return scanner.nextInt();
   }
 
-  public static String askForString(String stem) {
+  public static String getString(String stem) {
     if (scanner == null) {
       return null;
     }
     Output.print(stem);
     return scanner.nextLine();
+  }
+
+  public static char getChar(String stem) {
+    String userResponse = Input.getString(stem);
+    
+    return userResponse.toCharArray()[0];
+  }
+
+  public static char getCharInArray(String stem, char[] charArray) {
+    char returnChar = '\0';
+    returnChar = getChar(stem + Arrays.toString(charArray));
+    
+    while (!BasicArithmetic.isCharInArray(returnChar, charArray)) {
+      Output.println("Please input a character in the array.");
+      returnChar = getChar(stem);
+    }
+    
+    return returnChar;
   }
 }
 
@@ -71,6 +90,39 @@ class BasicArithmetic {
 
     return String.valueOf(integer);
   }
+
+  public static boolean isCharInArray(char character, char[] charArray) {
+    for (char currentChar : charArray) {
+      if (character == currentChar) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public static boolean isCharUpper(char character) {
+    if (character >= 'A' && (character <= 'Z')) {
+      return true;
+    }
+    return false;
+  }
+
+  public static boolean isCharLower(char character) {
+    if ((character >= 'a') && (character <= 'z')) {
+      return true;
+    }
+    return false;
+  }
+
+  public static char makeCharUpper(char character) {
+    if (isCharUpper(character)) {
+      return character;
+    }
+    
+    // The space character's ascii value is 32, and the space between the uppercase and lowercase sections of ascii are 32 characters apart.
+    // Uppercase comes before lowercase in ascii, so we subtract 32 from the char.
+    return (char) (character - ' ');
+  }
 }
 
 enum Direction {
@@ -101,26 +153,24 @@ class Position {
     return new Position(-1, -1);
   }
 
-  public static Position addDirection(Direction direction) {
-    return addDirection(direction, 1);
-  }
-
-  public static Position addDirection(Direction direction, int amount) {
-    return addDirection(direction, amount, new Position(x, y));
+  public static Position addDirection(Direction direction, Position position) {
+    return addDirection(direction, 1, position);
   }
   
   public static Position addDirection(Direction direction, int amount, Position position) {
+    Position newPosition = new Position(position.x, position.y);
+    
     if (direction.equals(Direction.LEFT)) {
-      position.x -= amount;
+      newPosition.x -= amount;
     } else if (direction.equals(Direction.RIGHT)) {
-      position.x += amount;
+      newPosition.x += amount;
     } else if (direction.equals(Direction.UP)) {
-      position.y += amount;
+      newPosition.y += amount;
     } else if (direction.equals(Direction.DOWN)) {
-      position.y -= amount;
+      newPosition.y -= amount;
     }
 
-    return position;
+    return newPosition;
   }
 
   public void addDirectionToSelf(Direction direction) {
@@ -133,7 +183,7 @@ class Position {
     y = newPosition.y;
   }
 
-  public static Position[] getEveryDirectionAdded(Position position) {
+  public static Position[] getFourDirectionsAdded(Position position) {
     return new Position[]{
       addDirection(Direction.LEFT, 1, position),
       addDirection(Direction.RIGHT, 1, position),
@@ -141,10 +191,23 @@ class Position {
       addDirection(Direction.DOWN, 1, position)
     };
   }
+
+  public static Position[] getEightDirectionsAdded(Position position) {
+    return new Position[]{
+      addDirection(Direction.LEFT, position),
+      addDirection(Direction.UP, addDirection(Direction.LEFT, 1, position)),
+      addDirection(Direction.RIGHT, position),
+      addDirection(Direction.DOWN, addDirection(Direction.RIGHT, position)),
+      addDirection(Direction.UP,position),
+      addDirection(Direction.RIGHT, addDirection(Direction.UP,position)),
+      addDirection(Direction.DOWN, position),
+      addDirection(Direction.LEFT, addDirection(Direction.DOWN, position))
+    };
+  }
 }
 
 class Cell {
-  static int numbOfCells = 0 ;
+  static int numbOfCells = 0;
   static int numbOfMines = 0;
   static int numbOfFlags = 0;
   boolean isMine;
@@ -164,22 +227,22 @@ class Cell {
       return '*';
     }
     
-    //if (!revealed) {
-    //  return '#';
-    //}
-
-    if (flagged) {
-      return 'F';
+        if (flagged) {
+          return 'F';
+        }
+    
+    if (!revealed) {
+      return '#';
     }
-
+    
     if (isMine) {
       return 'X';
     }
-
+    
     if (neighborMines == 0) {
       return '.';
     }
-
+    
     return (char) (neighborMines + '0');
   }
 
@@ -213,7 +276,16 @@ class Field {
   public Field(int size) {
     this(size, size);
   }
-
+  
+  public boolean isPositionOutOfBound(Position position) {
+    if ((position.x >= width) || (position.x < 0)) {
+      return true;
+    } else if ((position.y >= height) || (position.y < 0)) {
+      return true;
+    }
+    return false;
+  }
+  
   public boolean attemptToAddMines(int amountOfMines) {
     if (amountOfMines > width*height) {
       return false;
@@ -247,11 +319,9 @@ class Field {
       Output.println();
     }
   }
-
+  
   public byte isCellAMine(Position position) {
-    if ((position.x >= width) || (position.x < 0)) {
-      return 0;
-    } else if ((position.y >= height) || (position.y < 0)) {
+    if (isPositionOutOfBound(position)) {
       return 0;
     }
     
@@ -287,6 +357,10 @@ class Field {
   }
   
   public void revealCell(Position position) {
+    if (isPositionOutOfBound(position)) {
+      return;
+    }
+    
     Cell currentCell = board[position.x][position.y];
     
     if (currentCell.revealed) {
@@ -295,16 +369,31 @@ class Field {
     currentCell.revealed = true;
     
     if (currentCell.neighborMines == 0) {
-      Position[] neighbors = Position.getEveryDirectionAdded(position);
+      Position[] neighbors = Position.getEightDirectionsAdded(position);
       
       for (Position neighbor : neighbors) {
         revealCell(neighbor);
       }
     }
   }
-
-  public void revealRandomZeroCell() {
+  
+  public Position getRandomZeroCellsPos() {
+    Cell currentCell = null;
     
+    int randomX = 0;
+    int randomY = 0;
+    while (currentCell == null || currentCell.isMine || currentCell.neighborMines != 0) {
+      randomX = BasicArithmetic.getRandomInt(width);
+      randomY = BasicArithmetic.getRandomInt(height);
+      
+      currentCell = board[randomX][randomY];
+    }
+    
+    return new Position(randomX, randomY);
+  }
+  
+  public void revealRandomZeroCell() {
+    revealCell(getRandomZeroCellsPos());
   }
 }
 
@@ -318,7 +407,19 @@ class GameLogic {
   
   public void gameLoop() {
     playingRound = true;
+    
+    char flagOrReveal = '\0';
     while (playingRound) {
+      flagOrReveal = Input.getCharInArray("Input either \"F\"lag or \"R\"eveal", new char[]{'f', 'F', 'r', 'R'});
+      flagOrReveal = BasicArithmetic.makeCharUpper(flagOrReveal);
+      
+      int chosenX = Input.askForInt("X position? ");
+      int chosenY = Input.askForInt("Y position? ");
+
+      if (flagOrReveal == 'F') {
+        
+
+      }
       
       
       playingRound = false;
@@ -327,9 +428,12 @@ class GameLogic {
   
   public void startGame() {
     double percentageOfMines = Input.askForInt("Percentage of mines? %") / 100d;
+    Output.println();
+
     field.attemptToAddMines((int) (percentageOfMines * field.width * field.height));
     field.calculateAllNeighbors();
     
+    field.revealRandomZeroCell();
     field.printBoard();
   }
 }
