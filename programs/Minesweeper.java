@@ -101,15 +101,15 @@ class Position {
     return new Position(-1, -1);
   }
 
-  public Position addDirection(Direction direction) {
+  public static Position addDirection(Direction direction) {
     return addDirection(direction, 1);
   }
 
-  public Position addDirection(Direction direction, int amount) {
+  public static Position addDirection(Direction direction, int amount) {
     return addDirection(direction, amount, new Position(x, y));
   }
   
-  public Position addDirection(Direction direction, int amount, Position position) {
+  public static Position addDirection(Direction direction, int amount, Position position) {
     if (direction.equals(Direction.LEFT)) {
       position.x -= amount;
     } else if (direction.equals(Direction.RIGHT)) {
@@ -132,6 +132,15 @@ class Position {
     x = newPosition.x;
     y = newPosition.y;
   }
+
+  public static Position[] getEveryDirectionAdded(Position position) {
+    return new Position[]{
+      addDirection(Direction.LEFT, 1, position),
+      addDirection(Direction.RIGHT, 1, position),
+      addDirection(Direction.UP, 1, position),
+      addDirection(Direction.DOWN, 1, position)
+    };
+  }
 }
 
 class Cell {
@@ -141,6 +150,7 @@ class Cell {
   boolean isMine;
   boolean revealed;
   boolean flagged;
+  boolean exploded;
   byte neighborMines;
 
   public Cell() {
@@ -150,6 +160,10 @@ class Cell {
   }
   
   public char getAsChar() {
+    if (exploded) {
+      return '*';
+    }
+    
     //if (!revealed) {
     //  return '#';
     //}
@@ -233,30 +247,24 @@ class Field {
       Output.println();
     }
   }
-}
 
-class GameLogic {
-  public Field field;
-  boolean playingRound = false;
-
-  public GameLogic(int width, int height) {
-    field = new Field(width, height);
-  }
-  
   public byte isCellAMine(Position position) {
-    if ((position.x >= field.width) || (position.x < 0)) {
+    if ((position.x >= width) || (position.x < 0)) {
       return 0;
-    } else if ((position.y >= field.height) || (position.y < 0)) {
+    } else if ((position.y >= height) || (position.y < 0)) {
       return 0;
     }
     
-    return BasicArithmetic.boolToByte(field.board[position.x][position.y].isMine);
+    return BasicArithmetic.boolToByte(board[position.x][position.y].isMine);
   }
   
-  
-  
   public void calcCellsNeighbors(Position position) {
-    Cell currentCell = field.board[position.x][position.y];
+    Cell currentCell = board[position.x][position.y];
+    
+    if (currentCell.isMine) {
+      return;
+    }
+    
     byte foundMines = 0;
     for (int xIndex = -1; xIndex <= 1; xIndex++) {
       foundMines += isCellAMine(new Position(position.x + xIndex, position.y + 1));
@@ -271,25 +279,57 @@ class GameLogic {
   }
   
   public void calculateAllNeighbors() {
-    for (int xIndex = 0; xIndex < field.width; xIndex++) {
-      for (int yIndex= 0; yIndex < field.height; yIndex++) {
+    for (int xIndex = 0; xIndex < width; xIndex++) {
+      for (int yIndex= 0; yIndex < height; yIndex++) {
         calcCellsNeighbors(new Position(xIndex, yIndex));
       }
     }
   }
-
-  public void gameLoop() {
-    playingRound = true;
-    while (playingRound) {
-      playingRound = false;
+  
+  public void revealCell(Position position) {
+    Cell currentCell = board[position.x][position.y];
+    
+    if (currentCell.revealed) {
+      return;
+    }
+    currentCell.revealed = true;
+    
+    if (currentCell.neighborMines == 0) {
+      Position[] neighbors = Position.getEveryDirectionAdded(position);
+      
+      for (Position neighbor : neighbors) {
+        revealCell(neighbor);
+      }
     }
   }
 
+  public void revealRandomZeroCell() {
+    
+  }
+}
+
+class GameLogic {
+  public Field field;
+  boolean playingRound = false;
+  
+  public GameLogic(int width, int height) {
+    field = new Field(width, height);
+  }
+  
+  public void gameLoop() {
+    playingRound = true;
+    while (playingRound) {
+      
+      
+      playingRound = false;
+    }
+  }
+  
   public void startGame() {
     double percentageOfMines = Input.askForInt("Percentage of mines? %") / 100d;
     field.attemptToAddMines((int) (percentageOfMines * field.width * field.height));
-    calculateAllNeighbors();
-
+    field.calculateAllNeighbors();
+    
     field.printBoard();
   }
 }
