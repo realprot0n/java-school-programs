@@ -8,9 +8,13 @@ public class persistentBugger {
   }
 
   private static int charIntoInt(char character) {
+    // If the char is not a digit, return -1.
     if (character < '0' || character > '9') {
       return -1;
     }
+
+    // '0' is like the offset of the numbers in ascii.
+    // Subtracting '0' (48) from '5' (53) returns 5.
     return character - '0';
   }
 
