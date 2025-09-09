@@ -10,8 +10,7 @@ public class ProblemSetTwo {
       );
     }
     
-    double middleOfString = string.length()/2.0d;
-    println(middleOfString);
+    double middleOfString = ((double) string.length()+1)/2d;
     
     return String.format("%c%c",
       string.charAt((int) Math.floor(middleOfString)),
