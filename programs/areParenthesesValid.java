@@ -12,11 +12,12 @@ public class areParenthesesValid {
         openParenthesesCounter++;
       }
       
+      // A closing parenthesis appeared without a preceeding parenthesis.
       if (openParenthesesCounter < 0) {
         return false;
       }
     }
-    
+    // Not all open parenthesis have a corresponding closing parenthesis.
     if (openParenthesesCounter != 0) {
       return false;
     }

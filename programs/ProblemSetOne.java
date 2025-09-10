@@ -1,5 +1,6 @@
 import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
 
 class Output {
   public static void println(Object obj) {
@@ -12,6 +13,124 @@ class Output {
   
   public static void print(Object obj) {
     System.out.print(obj);
+  }
+}
+
+class Input {
+  public static Scanner scanner;
+  static boolean initialized = false;
+  static boolean lastWasInt = false;
+
+  public static void initialize() {
+    if (initialized) {
+      return;
+    }
+    scanner = new Scanner(System.in);
+    initialized = true;
+    lastWasInt = false;
+  }
+
+  public static int askForInt(String stem) {
+    if (scanner == null) {
+      return -1;
+    }
+    lastWasInt = true;
+    Output.print(stem);
+    return scanner.nextInt();
+  }
+
+  public static String getString(String stem) {
+    if (scanner == null) {
+      return null;
+    } else if (lastWasInt) {
+      return null;
+    }
+    Output.print(stem);
+    return scanner.nextLine();
+  }
+  
+  public static char getChar(String stem) {
+    if (lastWasInt) {
+      return '\0';
+    }
+    String userResponse = Input.getString(stem);
+    
+    return userResponse.toCharArray()[0];
+  }
+
+  public static char getCharInArray(String stem, char[] charArray) {
+    char returnChar = '\0';
+    returnChar = getChar(stem + Arrays.toString(charArray));
+    
+    while (!BasicArithmetic.isCharInArray(returnChar, charArray)) {
+      Output.println("Please input a character in the array.");
+      returnChar = getChar(stem);
+    }
+    
+    return returnChar;
+  }
+}
+
+class BasicArithmetic {
+  public static byte boolToByte(boolean bool) {
+    return (byte) (bool ? 1 : 0);
+  }
+
+  public static int getRandomInt() {
+    return (int) (Math.random() * Integer.MAX_VALUE);
+  }
+
+  public static int getRandomInt(int max) {
+    return getRandomInt() % max;
+  }
+
+  public static byte getRandomByte() {
+    return (byte) (Math.random()*256);
+  }
+
+  public static byte getRandomByte(byte max) {
+    return (byte) (getRandomByte() % max);
+  }
+
+  public static String intIntoTwoWide(int integer) {
+    if ((integer < 10) && (integer >= 0)) {
+      return integer + " ";
+    }
+
+    return String.valueOf(integer);
+  }
+
+  public static boolean isCharInArray(char character, char[] charArray) {
+    for (char currentChar : charArray) {
+      if (character == currentChar) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public static boolean isCharUpper(char character) {
+    if (character >= 'A' && (character <= 'Z')) {
+      return true;
+    }
+    return false;
+  }
+
+  public static boolean isCharLower(char character) {
+    if ((character >= 'a') && (character <= 'z')) {
+      return true;
+    }
+    return false;
+  }
+
+  public static char makeCharUpper(char character) {
+    if (isCharUpper(character)) {
+      return character;
+    }
+    
+    // The space character's ascii value is 32, and the space between the uppercase and lowercase sections of ascii is 32 characters apart.
+    // Uppercase comes before lowercase in ascii, so we subtract 32 from the char.
+    return (char) (character - ' ');
   }
 }
 
@@ -117,5 +236,6 @@ public class ProblemSetOne {
     Library library = new Library(Book.getSampleBooks());
     
     library.printBooks();
+    
   }
 }
