@@ -16,7 +16,7 @@ public class areParenthesesValid {
       if (openParenthesesCounter < 0) {
         return false;
       }
-    }
+    } 
     // Not all open parenthesis have a corresponding closing parenthesis.
     if (openParenthesesCounter != 0) {
       return false;
