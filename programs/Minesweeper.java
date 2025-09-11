@@ -18,6 +18,7 @@ class Output {
 class Input {
   public static Scanner scanner;
   static boolean initialized = false;
+  static boolean justUsedNextInt = false;
 
   public static void initialize() {
     if (initialized) {
@@ -31,6 +32,7 @@ class Input {
     if (scanner == null) {
       return -1;
     }
+    justUsedNextInt = true;
     Output.print(stem);
     return scanner.nextInt();
   }
@@ -39,6 +41,11 @@ class Input {
     if (scanner == null) {
       return null;
     }
+    
+    if (justUsedNextInt) {
+      scanner.nextLine();
+    }
+
     Output.print(stem);
     return scanner.nextLine();
   }
@@ -51,7 +58,7 @@ class Input {
 
   public static char getCharInArray(String stem, char[] charArray) {
     char returnChar = '\0';
-    returnChar = getChar(stem + Arrays.toString(charArray));
+    returnChar = getChar(stem + " " +  Arrays.toString(charArray) + " ");
     
     while (!BasicArithmetic.isCharInArray(returnChar, charArray)) {
       Output.println("Please input a character in the array.");
@@ -227,9 +234,9 @@ class Cell {
       return '*';
     }
     
-        if (flagged) {
-          return 'F';
-        }
+    if (flagged) {
+      return 'F';
+    }
     
     if (!revealed) {
       return '#';
@@ -254,6 +261,24 @@ class Cell {
     isMine = true;
     numbOfMines += 1;
   }
+
+  public void flagOrUnflag() {
+    if (flagged) {
+      flagged = false;
+    } else {
+      flagged = true;
+    }
+  }
+
+  public boolean isCleared() {
+    if (isMine && (!flagged)) {
+      return false;
+    } else if ((!isMine) && (!revealed)) {
+      return false;
+    }
+    
+    return true;
+  }
 }
 
 class Field {
@@ -277,7 +302,7 @@ class Field {
     this(size, size);
   }
   
-  public boolean isPositionOutOfBound(Position position) {
+  public boolean isPositionOutOfBounds(Position position) {
     if ((position.x >= width) || (position.x < 0)) {
       return true;
     } else if ((position.y >= height) || (position.y < 0)) {
@@ -321,11 +346,15 @@ class Field {
   }
   
   public byte isCellAMine(Position position) {
-    if (isPositionOutOfBound(position)) {
+    if (isPositionOutOfBounds(position)) {
       return 0;
     }
     
     return BasicArithmetic.boolToByte(board[position.x][position.y].isMine);
+  }
+
+  public void flagOrUnflag(Position position) {
+    board[position.x][position.y].flagOrUnflag();
   }
   
   public void calcCellsNeighbors(Position position) {
@@ -336,16 +365,10 @@ class Field {
     }
     
     byte foundMines = 0;
-    for (int xIndex = -1; xIndex <= 1; xIndex++) {
-      foundMines += isCellAMine(new Position(position.x + xIndex, position.y + 1));
+    for (Position deltaPosition : Position.getEightDirectionsAdded(position)) {
+      foundMines += (byte) isCellAMine(deltaPosition);
     }
-    foundMines += isCellAMine(new Position(position.x - 1, position.y));
-    foundMines += isCellAMine(new Position(position.x + 1, position.y));
-    
-    for (int xIndex = -1; xIndex <= 1; xIndex++) {
-      foundMines += isCellAMine(new Position(position.x + xIndex, position.y - 1));
-    }
-    currentCell.neighborMines = foundMines;
+    currentCell.neighborMines = (byte) foundMines;
   }
   
   public void calculateAllNeighbors() {
@@ -356,17 +379,22 @@ class Field {
     }
   }
   
-  public void revealCell(Position position) {
-    if (isPositionOutOfBound(position)) {
-      return;
+  public boolean revealCell(Position position) {
+    if (isPositionOutOfBounds(position)) {
+      return false;
     }
     
     Cell currentCell = board[position.x][position.y];
     
     if (currentCell.revealed) {
-      return;
+      return false;
     }
     currentCell.revealed = true;
+
+    if (currentCell.isMine) {
+      board[position.x][position.y].exploded = true;
+      return true;
+    }
     
     if (currentCell.neighborMines == 0) {
       Position[] neighbors = Position.getEightDirectionsAdded(position);
@@ -375,6 +403,7 @@ class Field {
         revealCell(neighbor);
       }
     }
+    return false;
   }
   
   public Position getRandomZeroCellsPos() {
@@ -395,6 +424,18 @@ class Field {
   public void revealRandomZeroCell() {
     revealCell(getRandomZeroCellsPos());
   }
+
+  public boolean isBoardCleared() {
+    for (Cell[] rows: board) {
+      for (Cell cell : rows) {
+        if (!cell.isCleared()) {
+          return false;
+        }
+      }
+    }
+    
+    return true;
+  }
 }
 
 class GameLogic {
@@ -409,20 +450,39 @@ class GameLogic {
     playingRound = true;
     
     char flagOrReveal = '\0';
+    boolean cellWasMine = false;
     while (playingRound) {
-      flagOrReveal = Input.getCharInArray("Input either \"F\"lag or \"R\"eveal", new char[]{'f', 'F', 'r', 'R'});
+      field.printBoard();
+      Output.println();
+      
+      flagOrReveal = Input.getCharInArray("Input either \"F\"lag/Unflag or \"R\"eveal", new char[]{'f', 'F', 'r', 'R'});
       flagOrReveal = BasicArithmetic.makeCharUpper(flagOrReveal);
       
       int chosenX = Input.askForInt("X position? ");
       int chosenY = Input.askForInt("Y position? ");
-
-      if (flagOrReveal == 'F') {
-        
-
+      
+      Position chosenPosition = new Position(chosenX, chosenY);
+      if (field.isPositionOutOfBounds(chosenPosition)) {
+        continue;
       }
       
+      if (flagOrReveal == 'F') {
+        field.flagOrUnflag(chosenPosition);
+      } else if (flagOrReveal == 'R') {
+        cellWasMine = field.revealCell(chosenPosition);
+      }
       
-      playingRound = false;
+      if (cellWasMine) {
+        playingRound = false;
+        Output.println("\nyou TOUCHED a MINE!");
+        break;
+      }
+      
+
+      if (field.isBoardCleared()) {
+        Output.println("goog joob");
+        break;
+      }
     }
   }
   
@@ -434,7 +494,8 @@ class GameLogic {
     field.calculateAllNeighbors();
     
     field.revealRandomZeroCell();
-    field.printBoard();
+
+    gameLoop();
   }
 }
 
