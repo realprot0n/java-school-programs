@@ -94,7 +94,7 @@ class BasicArithmetic {
     if ((integer < 10) && (integer >= 0)) {
       return integer + " ";
     }
-
+    
     return String.valueOf(integer);
   }
 
