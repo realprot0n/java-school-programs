@@ -1,9 +1,22 @@
 import java.util.Scanner;
 
+class Output {
+  public static void println(Object obj) {
+    System.out.println(obj);
+  }
+  
+  public static void println() {
+    println("");
+  }
+  
+  public static void print(Object obj) {
+    System.out.print(obj);
+  }
+}
+
 class Input {
   static Scanner scanner;
   static boolean initialized;
-  static boolean lastWasInt;
   
   public static void initialize(Scanner setScanner) {
     if (initialized) {
@@ -11,15 +24,6 @@ class Input {
     }
     
     scanner = setScanner;
-    lastWasInt = false;
-  }
-
-  static public void fixIntNewline() {
-    if (!initialized) {
-      return;
-    }
-
-    scanner.nextLine();
   }
 
   static public void initialize() {
@@ -30,16 +34,23 @@ class Input {
     if (!initialized) {
       return -1;
     }
-    lastWasInt = true;
     int userInput = scanner.nextInt();
     
-    scanner.nextLine(); // Fix the bug with nextInt
+    scanner.nextLine(); // Fix the bug with nextInt adding a newline to the buffer
     return userInput;
-
   }
 
   static public String nextLine() {
+    if (!initialized) {
+      return null;
+    }
+
     return scanner.nextLine();
+  }
+
+  static public String askForString(String stem) {
+    Output.print(stem);
+    return nextLine();
   }
 }
 
