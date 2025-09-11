@@ -5,7 +5,7 @@ class Output {
   public static void println(Object obj) {
     System.out.println(obj);
   }
-
+  
   public static void println() {
     println("");
   }
@@ -19,7 +19,7 @@ class Input {
   public static Scanner scanner;
   static boolean initialized = false;
   static boolean justUsedNextInt = false;
-
+  
   public static void initialize() {
     if (initialized) {
       return;
@@ -27,7 +27,7 @@ class Input {
     scanner = new Scanner(System.in);
     initialized = true;
   }
-
+  
   public static int askForInt(String stem) {
     if (scanner == null) {
       return -1;
@@ -36,7 +36,7 @@ class Input {
     Output.print(stem);
     return scanner.nextInt();
   }
-
+  
   public static String getString(String stem) {
     if (scanner == null) {
       return null;
@@ -45,17 +45,17 @@ class Input {
     if (justUsedNextInt) {
       scanner.nextLine();
     }
-
+    
     Output.print(stem);
     return scanner.nextLine();
   }
-
+  
   public static char getChar(String stem) {
     String userResponse = Input.getString(stem);
     
     return userResponse.toCharArray()[0];
   }
-
+  
   public static char getCharInArray(String stem, char[] charArray) {
     char returnChar = '\0';
     returnChar = getChar(stem + " " +  Arrays.toString(charArray) + " ");
@@ -73,23 +73,23 @@ class BasicArithmetic {
   public static byte boolToByte(boolean bool) {
     return (byte) (bool ? 1 : 0);
   }
-
+  
   public static int getRandomInt() {
     return (int) (Math.random() * Integer.MAX_VALUE);
   }
-
+  
   public static int getRandomInt(int max) {
     return getRandomInt() % max;
   }
-
+  
   public static byte getRandomByte() {
     return (byte) (Math.random()*256);
   }
-
+  
   public static byte getRandomByte(byte max) {
     return (byte) (getRandomByte() % max);
   }
-
+  
   public static String intIntoTwoWide(int integer) {
     if ((integer < 10) && (integer >= 0)) {
       return integer + " ";
@@ -97,7 +97,15 @@ class BasicArithmetic {
     
     return String.valueOf(integer);
   }
-
+  
+  public static String intIntoThreeWide(int integer) {
+    if ((integer < 100) && (integer > -10)) {
+      return intIntoTwoWide(integer) + " ";
+    }
+    
+    return String.valueOf(integer);
+  }
+  
   public static boolean isCharInArray(char character, char[] charArray) {
     for (char currentChar : charArray) {
       if (character == currentChar) {
@@ -108,17 +116,11 @@ class BasicArithmetic {
   }
 
   public static boolean isCharUpper(char character) {
-    if (character >= 'A' && (character <= 'Z')) {
-      return true;
-    }
-    return false;
+    return (character >= 'A' && (character <= 'Z'));
   }
 
   public static boolean isCharLower(char character) {
-    if ((character >= 'a') && (character <= 'z')) {
-      return true;
-    }
-    return false;
+    return ((character >= 'a') && (character <= 'z'));
   }
 
   public static char makeCharUpper(char character) {
@@ -129,6 +131,10 @@ class BasicArithmetic {
     // The space character's ascii value is 32, and the space between the uppercase and lowercase sections of ascii are 32 characters apart.
     // Uppercase comes before lowercase in ascii, so we subtract 32 from the char.
     return (char) (character - ' ');
+  }
+  
+  public static boolean isCharNum(char character) {
+    return ((character >= '0') || (character <= '9'));
   }
 }
 
@@ -336,7 +342,7 @@ class Field {
     Output.println();
 
     for (int yIndex = 0; yIndex < height; yIndex++) {
-      Output.print(BasicArithmetic.intIntoTwoWide(yIndex) + " ");
+      Output.print(BasicArithmetic.intIntoThreeWide(yIndex));
       for (int xIndex = 0; xIndex < width; xIndex++) {
         Output.print(board[xIndex][yIndex].getAsChar());
         Output.print(" ");
