@@ -1,6 +1,17 @@
 import java.util.Scanner;
 import java.util.Arrays;
 
+public class Minesweeper {
+  public static void main(String[] args) {
+    Input.initialize();
+    int width = Input.askForInt("Width? ");
+    int height = Input.askForInt("Height? ");
+    GameLogic game = new GameLogic(width, height);
+    
+    game.startGame();
+  }
+}
+
 class Output {
   public static void println(Object obj) {
     System.out.println(obj);
@@ -13,6 +24,61 @@ class Output {
   public static void print(Object obj) {
     System.out.print(obj);
   }
+}
+
+class ConsoleColors {
+  public static final String RESET = "\u001B[0m";
+  public static final String BLACK = "\u001B[30m";
+  public static final String RED = "\u001B[31m";
+  public static final String GREEN = "\u001B[32m";
+  public static final String YELLOW = "\u001B[33m";
+  public static final String BLUE = "\u001B[34m";
+  public static final String PURPLE = "\u001B[35m";
+  public static final String CYAN = "\u001B[36m";
+  public static final String WHITE = "\u001B[37m";
+  
+  public static final String BG_RED = "\u001B[41m";
+  
+  public static String createTrueColorTag(int red, int green, int blue) {
+    return String.format("\033[38;2;%d;%d;%dm", red, green, blue);
+  }
+  
+  public static String createTrueColorTag(int[] color) {
+    if (color.length != 3) {
+      return "\0";
+    }
+    return createTrueColorTag(color[0], color[1], color[2]);
+  }
+
+  public static String colorStringByColor(String string, int red, int blue, int green) {
+    return createTrueColorTag(red, blue, green) + string + RESET;
+  }
+
+  public static String colorStringByColor(String string, int[] color) {
+    if (color.length != 3) {
+      return "Your color array is not three you stinky stinky stinky idi ot";
+    }
+    
+    return colorStringByColor(string, color[0], color[1], color[2]);
+  }
+  
+  public static String colorNumbByValue(int number) {
+    int[][] colors = new int[][] {
+      new int[]{255,255,255},
+      new int[]{0,0,255},
+      new int[]{0,128,0},
+      new int[]{255,0,0},
+      new int[]{0,0,128},
+      new int[]{128,0,0},
+      new int[]{0,128,128},
+      new int[]{255,192,0},
+      new int[]{128,128,128},
+      new int[]{255,255,255},
+    };
+    
+    return colorStringByColor(Integer.toString(number), colors[number]);
+  }
+
 }
 
 class Input {
@@ -134,7 +200,7 @@ class BasicArithmetic {
   }
   
   public static boolean isCharNum(char character) {
-    return ((character >= '0') || (character <= '9'));
+    return ((character >= '0') && (character <= '9'));
   }
 }
 
@@ -259,6 +325,19 @@ class Cell {
     return (char) (neighborMines + '0');
   }
 
+  public String getAsString() {
+    char charValue = getAsChar();
+    String stringValue = String.valueOf(charValue);
+    
+    if (BasicArithmetic.isCharNum(charValue)) {
+      return ConsoleColors.colorNumbByValue(Integer.valueOf(charValue - '0'));
+    } else if (charValue == 'F') {
+      return ConsoleColors.colorStringByColor("F", 255, 0, 0);
+    }
+    
+    return stringValue;
+  }
+
   public void attemptTurnIntoMine() {
     if (isMine) {
       return;
@@ -327,10 +406,10 @@ class Field {
     while (Cell.numbOfMines < amountOfMines) {
       randomX = BasicArithmetic.getRandomInt(width);
       randomY = BasicArithmetic.getRandomInt(height);
-
+      
       board[randomX][randomY].attemptTurnIntoMine();
     }
-
+    
     return true;
   }
 
@@ -344,7 +423,7 @@ class Field {
     for (int yIndex = 0; yIndex < height; yIndex++) {
       Output.print(BasicArithmetic.intIntoThreeWide(yIndex));
       for (int xIndex = 0; xIndex < width; xIndex++) {
-        Output.print(board[xIndex][yIndex].getAsChar());
+        Output.print(board[xIndex][yIndex].getAsString());
         Output.print(" ");
       }
       Output.println();
@@ -383,6 +462,19 @@ class Field {
         calcCellsNeighbors(new Position(xIndex, yIndex));
       }
     }
+  }
+  
+  public void revealCellsAroundRevealed(Position position) {
+    if (isPositionOutOfBounds(position)) {
+      return;
+    }
+
+    Cell currentCell = board[position.x][position.y];
+
+    if (currentCell.isMine) {
+      return;
+    } else if (currentCell.)
+
   }
   
   public boolean revealCell(Position position) {
@@ -502,16 +594,5 @@ class GameLogic {
     field.revealRandomZeroCell();
 
     gameLoop();
-  }
-}
-
-public class Minesweeper {
-  public static void main(String[] args) {
-    Input.initialize();
-    int width = Input.askForInt("Width? ");
-    int height = Input.askForInt("Height? ");
-    GameLogic game = new GameLogic(width, height);
-    
-    game.startGame();
   }
 }
