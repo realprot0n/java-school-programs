@@ -466,7 +466,7 @@ class Field {
   
   public boolean neighborMinesFlagged(Position position) {
     for (Position neighborPosition : Position.getEightDirectionsAdded(position)) {
-      if (isPositionOutOfBounds(position)) {
+      if (isPositionOutOfBounds(neighborPosition)) {
         continue;
       }
       
