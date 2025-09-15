@@ -28,19 +28,15 @@ class Output {
 
 class ConsoleColors {
   public static final String RESET = "\u001B[0m";
-  public static final String BLACK = "\u001B[30m";
-  public static final String RED = "\u001B[31m";
-  public static final String GREEN = "\u001B[32m";
-  public static final String YELLOW = "\u001B[33m";
-  public static final String BLUE = "\u001B[34m";
-  public static final String PURPLE = "\u001B[35m";
-  public static final String CYAN = "\u001B[36m";
-  public static final String WHITE = "\u001B[37m";
-  
-  public static final String BG_RED = "\u001B[41m";
+  public static String createTrueColorTag(boolean isBackground, int red, int green, int blue) {
+    if (isBackground) {
+      return String.format("\033[48;2;%d;%d;%dm", red, green, blue);
+    }
+    return String.format("\033[38;2;%d;%d;%dm", red, green, blue);
+  }
   
   public static String createTrueColorTag(int red, int green, int blue) {
-    return String.format("\033[38;2;%d;%d;%dm", red, green, blue);
+    return createTrueColorTag(false, red, green, blue);
   }
   
   public static String createTrueColorTag(int[] color) {
@@ -48,6 +44,10 @@ class ConsoleColors {
       return "\0";
     }
     return createTrueColorTag(color[0], color[1], color[2]);
+  }
+
+  public static String colorBackgroundByColor(String string, int red, int blue, int green) {
+    return createTrueColorTag(true, red, blue, green) + string + RESET;
   }
 
   public static String colorStringByColor(String string, int red, int blue, int green) {
@@ -84,7 +84,6 @@ class ConsoleColors {
 class Input {
   public static Scanner scanner;
   static boolean initialized = false;
-  static boolean justUsedNextInt = false;
   
   public static void initialize() {
     if (initialized) {
@@ -98,18 +97,15 @@ class Input {
     if (scanner == null) {
       return -1;
     }
-    justUsedNextInt = true;
     Output.print(stem);
-    return scanner.nextInt();
+    int userInput = scanner.nextInt();
+    scanner.nextLine();
+    return userInput;
   }
   
   public static String getString(String stem) {
     if (scanner == null) {
       return null;
-    }
-    
-    if (justUsedNextInt) {
-      scanner.nextLine();
     }
     
     Output.print(stem);
@@ -123,6 +119,10 @@ class Input {
   }
   
   public static char getCharInArray(String stem, char[] charArray) {
+    if (charArray.length <= 0) {
+      return '\0';
+    }
+    
     char returnChar = '\0';
     returnChar = getChar(stem + " " +  Arrays.toString(charArray) + " ");
     
@@ -493,12 +493,15 @@ class Field {
     
     Position[] neighbors = Position.getEightDirectionsAdded(position);
     for (Position neighbor : neighbors) {
-      revealCell(neighbor, false);
+      if (board[neighbor.x][neighbor.y].flagged) {
+        continue;
+      }
+      revealCell(neighbor, true);
     }
   }
   
   public boolean revealCell(Position position) {
-    return revealCell(position, true);
+    return revealCell(position, false);
   }
   
   public boolean revealCell(Position position, boolean isFromRevealAroundCell) {
@@ -524,10 +527,21 @@ class Field {
       Position[] neighbors = Position.getEightDirectionsAdded(position);
       
       for (Position neighbor : neighbors) {
-        revealCell(neighbor, false);
+        revealCell(neighbor, true);
       }
     }
     return false;
+  }
+
+  public void revealAllCells() {
+    for (int xIndex = 0; xIndex < width; xIndex++) {
+      for (int yIndex = 0; yIndex < height; yIndex++) {
+        board[xIndex][yIndex].revealed = true;
+        if (board[xIndex][yIndex].isMine) {
+          board[xIndex][yIndex].exploded = true;
+        }
+      }
+    }
   }
   
   public Position getRandomZeroCellsPos() {
@@ -599,12 +613,15 @@ class GameLogic {
       if (cellWasMine) {
         playingRound = false;
         Output.println("\nyou TOUCHED a MINE!");
+
+        field.revealAllCells();
+        field.printBoard();
         break;
       }
       
 
       if (field.isBoardCleared()) {
-        Output.println("goog joob");
+        Output.println("\ngoog joob");
         break;
       }
     }
