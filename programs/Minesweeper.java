@@ -337,16 +337,16 @@ class Cell {
     
     return stringValue;
   }
-
+  
   public void attemptTurnIntoMine() {
     if (isMine) {
       return;
     }
-
+    
     isMine = true;
     numbOfMines += 1;
   }
-
+  
   public void flagOrUnflag() {
     if (flagged) {
       flagged = false;
@@ -354,7 +354,7 @@ class Cell {
       flagged = true;
     }
   }
-
+  
   public boolean isCleared() {
     if (isMine && (!flagged)) {
       return false;
@@ -464,27 +464,53 @@ class Field {
     }
   }
   
+  public boolean neighborMinesFlagged(Position position) {
+    for (Position neighborPosition : Position.getEightDirectionsAdded(position)) {
+      if (isPositionOutOfBounds(position)) {
+        continue;
+      }
+      
+      Cell currentNeighbor = board[neighborPosition.x][neighborPosition.y];
+      if (currentNeighbor.isMine && !currentNeighbor.flagged) {
+        return false;
+      }
+    }
+    return true;
+  }
+  
   public void revealCellsAroundRevealed(Position position) {
     if (isPositionOutOfBounds(position)) {
       return;
     }
-
+    
     Cell currentCell = board[position.x][position.y];
-
+    
     if (currentCell.isMine) {
       return;
-    } else if (currentCell.)
-
+    } else if (!neighborMinesFlagged(position)) {
+      return;
+    }
+    
+    Position[] neighbors = Position.getEightDirectionsAdded(position);
+    for (Position neighbor : neighbors) {
+      revealCell(neighbor, false);
+    }
   }
   
   public boolean revealCell(Position position) {
+    return revealCell(position, true);
+  }
+  
+  public boolean revealCell(Position position, boolean isFromRevealAroundCell) {
     if (isPositionOutOfBounds(position)) {
       return false;
     }
     
     Cell currentCell = board[position.x][position.y];
     
-    if (currentCell.revealed) {
+    if (!isFromRevealAroundCell && currentCell.revealed) {
+      revealCellsAroundRevealed(position);
+    } else if (currentCell.revealed) {
       return false;
     }
     currentCell.revealed = true;
@@ -498,7 +524,7 @@ class Field {
       Position[] neighbors = Position.getEightDirectionsAdded(position);
       
       for (Position neighbor : neighbors) {
-        revealCell(neighbor);
+        revealCell(neighbor, false);
       }
     }
     return false;

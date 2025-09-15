@@ -82,12 +82,12 @@ class BasicArithmetic {
     return ((character >= '0') && (character <= '9'));
   }
   
-  private static boolean isCharPartOfNum(char character) {
-    return (
-      ((character >= '0') && (character <= '9')) ||
-
-    )
-  }
+  // private static boolean isCharPartOfNum(char character) {
+  //   return (
+  //     ((character >= '0') && (character <= '9')) ||
+  // 
+  //   )
+  // }
   
   public static boolean isStringNum(String string) {
     int charIndex = -1;
