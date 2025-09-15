@@ -100,7 +100,7 @@ class BasicArithmetic {
   }
 }
 
-class Input {
+public class CoolInput {
   static Scanner scanner;
   static boolean initialized;
   
@@ -151,11 +151,6 @@ class Input {
 
     }
   }
-}
 
-
-public class CoolAssInputClass {
-  public static void main(String[] args) {
-    
-  }
+  
 }

@@ -45,8 +45,15 @@ class ConsoleColors {
     }
     return createTrueColorTag(color[0], color[1], color[2]);
   }
+  
+  public static String colorStringBackgroundByColor(String string, int[] color) {
+    if (color.length != 3) {
+      return "Your color array is not three you stinky stinky stinky idi ot";
+    }
 
-  public static String colorBackgroundByColor(String string, int red, int blue, int green) {
+    return createTrueColorTag(true, color[0], color[1], color[2]) + string + RESET;
+  }
+  public static String colorStringBackgroundByColor(String string, int red, int blue, int green) {
     return createTrueColorTag(true, red, blue, green) + string + RESET;
   }
 
@@ -73,10 +80,10 @@ class ConsoleColors {
       new int[]{0,128,128},
       new int[]{255,192,0},
       new int[]{128,128,128},
-      new int[]{255,255,255},
+      new int[]{255,255,255}
     };
     
-    return colorStringByColor(Integer.toString(number), colors[number]);
+    return colorStringByColor(Integer.toString(number) + " ", colors[number]);
   }
 
 }
@@ -326,16 +333,33 @@ class Cell {
   }
 
   public String getAsString() {
+    return getAsString(false);
+  }
+
+
+  final private int[] revealedColor = new int[] {192, 192, 192};
+  final private int[] unrevealedColor = new int[] {64, 64, 64};
+  public String getAsString(boolean addSpace) {
     char charValue = getAsChar();
-    String stringValue = String.valueOf(charValue);
-    
+    String coloredString = "" + charValue;
+    if (addSpace) coloredString += " ";
+
     if (BasicArithmetic.isCharNum(charValue)) {
-      return ConsoleColors.colorNumbByValue(Integer.valueOf(charValue - '0'));
+      coloredString =  ConsoleColors.colorNumbByValue(Integer.valueOf(charValue - '0'));
     } else if (charValue == 'F') {
-      return ConsoleColors.colorStringByColor("F", 255, 0, 0);
+      coloredString =  ConsoleColors.colorStringByColor(coloredString, 255, 0, 0);
+    } else {
+      coloredString = ConsoleColors.colorStringByColor(coloredString, 255, 255, 255);
+    }
+
+    if (revealed) {
+      coloredString = ConsoleColors.colorStringBackgroundByColor(coloredString, revealedColor);
+    } else {
+      coloredString = ConsoleColors.colorStringBackgroundByColor(coloredString, unrevealedColor);
     }
     
-    return stringValue;
+    
+    return coloredString;
   }
   
   public void attemptTurnIntoMine() {
@@ -423,8 +447,8 @@ class Field {
     for (int yIndex = 0; yIndex < height; yIndex++) {
       Output.print(BasicArithmetic.intIntoThreeWide(yIndex));
       for (int xIndex = 0; xIndex < width; xIndex++) {
-        Output.print(board[xIndex][yIndex].getAsString());
-        Output.print(" ");
+        Output.print(board[xIndex][yIndex].getAsString(true));
+        // Output.print(" "); Uneeded; the extra space is now in `getAsString`
       }
       Output.println();
     }
