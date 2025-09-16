@@ -517,6 +517,10 @@ class Field {
     
     Position[] neighbors = Position.getEightDirectionsAdded(position);
     for (Position neighbor : neighbors) {
+      if (isPositionOutOfBounds(neighbor)) {
+        continue;
+      }
+      
       if (board[neighbor.x][neighbor.y].flagged) {
         continue;
       }
