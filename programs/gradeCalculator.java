@@ -6,9 +6,18 @@ public class gradeCalculator {
   public int minutes;
   public int hours;
 
-  public static double averageList(List<Integer> grades) {
+  public static double averageListOfInts(List<Integer> grades) {
     int sum = 0;
     for (Integer grade : grades) {
+      sum += grade;
+    }
+
+    return ((double) sum)/grades.size();
+  }
+  
+  public static double averageListOfDoubles(List<Double> grades) {
+    int sum = 0;
+    for (Double grade : grades) {
       sum += grade;
     }
 
@@ -24,23 +33,28 @@ public class gradeCalculator {
       homeworkGrades.add(Input.askForInt(String.format("%d: ", gradeIndex)));
     }
 
-    return averageList(homeworkGrades);
+    return averageListOfInts(homeworkGrades);
   }
 
   public static double getQuizAverage() {
-    List<Double> homeworkGrades = new ArrayList<Double>();
+    List<Double> quizGrades = new ArrayList<Double>();
     int numOfQuizGrades = Input.askForInt("How many quiz grades do you have?\n");
 
     Output.println("Please enter each quiz grade.");
-    for (int gradeIndex = 0; gradeIndex < numOfHomeworkGrades; gradeIndex++) {
-      homeworkGrades.add(Input.askForInt(String.format("%d: ", gradeIndex)));
+    for (int gradeIndex = 0; gradeIndex < numOfQuizGrades; gradeIndex++) {
+      quizGrades.add(Input.askForDouble(String.format("%d: ", gradeIndex)));
     }
+
+    return averageListOfDoubles(quizGrades);
   }
 
   public static void main(String[] args) {
     String courseName = Input.askForString("Please enter the course name.\n");
+
+    //int[] minutesAndHours = get
     double homeworkAverage = getHomeworkAverage();
 
+    double quizAverage = getQuizAverage();
 
   }
 }
