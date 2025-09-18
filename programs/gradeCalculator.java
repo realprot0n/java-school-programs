@@ -23,14 +23,20 @@ public class gradeCalculator {
 
     return ((double) sum)/grades.size();
   }
+
+  public static int[] getMinutesAndHours() {
+    int minutes = MyInput.askForInt("Please enter the average time spent in a week for this course in minutes.\n");
+
+    return new int[] {minutes%60, minutes/60};
+  }
   
   public static double getHomeworkAverage() {
     List<Integer> homeworkGrades = new ArrayList<Integer>(); // Why wont it take just an int??? thats so stupid
-    int numOfHomeworkGrades = Input.askForInt("How many homework grades do you have?\n");
+    int numOfHomeworkGrades = MyInput.askForInt("How many homework grades do you have?\n");
 
     Output.println("Please enter each homework grade.");
     for (int gradeIndex = 0; gradeIndex < numOfHomeworkGrades; gradeIndex++) {
-      homeworkGrades.add(Input.askForInt(String.format("%d: ", gradeIndex)));
+      homeworkGrades.add(MyInput.askForInt(String.format("%d: ", gradeIndex)));
     }
 
     return averageListOfInts(homeworkGrades);
@@ -38,23 +44,42 @@ public class gradeCalculator {
 
   public static double getQuizAverage() {
     List<Double> quizGrades = new ArrayList<Double>();
-    int numOfQuizGrades = Input.askForInt("How many quiz grades do you have?\n");
+    int numOfQuizGrades = MyInput.askForInt("How many quiz grades do you have?\n");
 
     Output.println("Please enter each quiz grade.");
     for (int gradeIndex = 0; gradeIndex < numOfQuizGrades; gradeIndex++) {
-      quizGrades.add(Input.askForDouble(String.format("%d: ", gradeIndex)));
+      quizGrades.add(MyInput.askForDouble(String.format("%d: ", gradeIndex)));
     }
 
     return averageListOfDoubles(quizGrades);
   }
 
+
+  public static void displayCourseInfo(String courseName, int[] minutesAndHours, double homeworkAverage, double quizAverage, double finalExamGrade) {
+    Output.println(String.format("Course name: %s", courseName));
+    Output.println(String.format("Weekly time spent: %dh%dm", minutesAndHours[0], minutesAndHours[1]));
+    Output.println(String.format("Average homework grade: %s", homeworkAverage));
+    Output.println(String.format("Average quiz grade: %s", quizAverage));
+    Output.println(String.format("Final exam grade: %s", finalExamGrade));
+
+    int overallGrade = (int) (((homeworkAverage * .35) + (quizAverage * .15) + (finalExamGrade * .5)) + .5);
+
+    Output.println(String.format("Overall grade: %d", overallGrade));
+  }
+
   public static void main(String[] args) {
-    String courseName = Input.askForString("Please enter the course name.\n");
-
-    //int[] minutesAndHours = get
+    MyInput.initialize();
+    
+    String courseName = MyInput.askForString("Please enter the course name.\n");
+    
+    int[] minutesAndHours = getMinutesAndHours();
     double homeworkAverage = getHomeworkAverage();
-
+    
     double quizAverage = getQuizAverage();
+    
+    double finalExamGrade = MyInput.askForDouble("Please enter the final exam grade for this course.\n");
+
+    displayCourseInfo(courseName, minutesAndHours, homeworkAverage, quizAverage, finalExamGrade);
 
   }
 }
@@ -73,7 +98,7 @@ class Output {
   }
 }
 
-class Input {
+class MyInput {
   public static Scanner scanner;
   private static boolean initialized = false;
   
@@ -90,9 +115,9 @@ class Input {
     return -1;
     }
     Output.print(stem);
-    int userInput = scanner.nextInt();
+    int userMyInput = scanner.nextInt();
     scanner.nextLine();
-    return userInput;
+    return userMyInput;
   }
 
   public static double askForDouble(String stem) {
@@ -100,9 +125,9 @@ class Input {
     return -1;
     }
     Output.print(stem);
-    double userInput = scanner.nextDouble();
+    double userMyInput = scanner.nextDouble();
     scanner.nextLine();
-    return userInput;
+    return userMyInput;
   }
   
   public static String askForString(String stem) {
