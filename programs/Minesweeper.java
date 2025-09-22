@@ -28,6 +28,7 @@ class Output {
 
 class ConsoleColors {
   public static final String RESET = "\u001B[0m";
+  
   public static String createTrueColorTag(boolean isBackground, int red, int green, int blue) {
     if (isBackground) {
       return String.format("\033[48;2;%d;%d;%dm", red, green, blue);
@@ -50,17 +51,17 @@ class ConsoleColors {
     if (color.length != 3) {
       return "Your color array is not three you stinky stinky stinky idi ot";
     }
-
+    
     return createTrueColorTag(true, color[0], color[1], color[2]) + string + RESET;
   }
   public static String colorStringBackgroundByColor(String string, int red, int blue, int green) {
     return createTrueColorTag(true, red, blue, green) + string + RESET;
   }
-
+  
   public static String colorStringByColor(String string, int red, int blue, int green) {
     return createTrueColorTag(red, blue, green) + string + RESET;
   }
-
+  
   public static String colorStringByColor(String string, int[] color) {
     if (color.length != 3) {
       return "Your color array is not three you stinky stinky stinky idi ot";
@@ -187,15 +188,15 @@ class BasicArithmetic {
     }
     return false;
   }
-
+  
   public static boolean isCharUpper(char character) {
     return (character >= 'A' && (character <= 'Z'));
   }
-
+  
   public static boolean isCharLower(char character) {
     return ((character >= 'a') && (character <= 'z'));
   }
-
+  
   public static char makeCharUpper(char character) {
     if (isCharUpper(character)) {
       return character;
@@ -234,11 +235,11 @@ class Position {
     x = position[0];
     y = position[1];
   }
-
+  
   public static Position getDefault() {
     return new Position(-1, -1);
   }
-
+  
   public static Position addDirection(Direction direction, Position position) {
     return addDirection(direction, 1, position);
   }
@@ -255,20 +256,20 @@ class Position {
     } else if (direction.equals(Direction.DOWN)) {
       newPosition.y -= amount;
     }
-
+    
     return newPosition;
   }
-
+  
   public void addDirectionToSelf(Direction direction) {
     addDirectionToSelf(direction, 1);
   }
-
+  
   public void addDirectionToSelf(Direction direction, int amount) {
     Position newPosition = addDirection(direction, amount, new Position(x, y));
     x = newPosition.x;
     y = newPosition.y;
   }
-
+  
   public static Position[] getFourDirectionsAdded(Position position) {
     return new Position[]{
       addDirection(Direction.LEFT, 1, position),
@@ -277,7 +278,7 @@ class Position {
       addDirection(Direction.DOWN, 1, position)
     };
   }
-
+  
   public static Position[] getEightDirectionsAdded(Position position) {
     return new Position[]{
       addDirection(Direction.LEFT, position),
@@ -301,7 +302,7 @@ class Cell {
   boolean flagged;
   boolean exploded;
   byte neighborMines;
-
+  
   public Cell() {
     numbOfCells += 1;
     isMine = false;
@@ -331,19 +332,20 @@ class Cell {
     
     return (char) (neighborMines + '0');
   }
-
+  
   public String getAsString() {
     return getAsString(false);
   }
-
-
+  
+  
   final private int[] revealedColor = new int[] {192, 192, 192};
   final private int[] unrevealedColor = new int[] {64, 64, 64};
   public String getAsString(boolean addSpace) {
     char charValue = getAsChar();
     String coloredString = "" + charValue;
+    
     if (addSpace) coloredString += " ";
-
+    
     if (BasicArithmetic.isCharNum(charValue)) {
       coloredString =  ConsoleColors.colorNumbByValue(Integer.valueOf(charValue - '0'));
     } else if (charValue == 'F') {
@@ -351,13 +353,12 @@ class Cell {
     } else {
       coloredString = ConsoleColors.colorStringByColor(coloredString, 255, 255, 255);
     }
-
+    
     if (revealed) {
       coloredString = ConsoleColors.colorStringBackgroundByColor(coloredString, revealedColor);
     } else {
       coloredString = ConsoleColors.colorStringBackgroundByColor(coloredString, unrevealedColor);
     }
-    
     
     return coloredString;
   }
@@ -366,7 +367,6 @@ class Cell {
     if (isMine) {
       return;
     }
-    
     isMine = true;
     numbOfMines += 1;
   }
@@ -393,13 +393,13 @@ class Cell {
 class Field {
   int width, height;
   Cell[][] board;
-
+  
   public Field(int setWidth, int setHeight) {
     width = setWidth;
     height = setHeight;
-
+    
     board = new Cell[setWidth][setHeight];
-
+    
     for (int xIndex = 0; xIndex < width; xIndex++) {
       for (int yIndex = 0; yIndex < height; yIndex++) {
         board[xIndex][yIndex] = new Cell();
@@ -436,14 +436,14 @@ class Field {
     
     return true;
   }
-
+  
   public void printBoard() {
     Output.print("   ");
     for (int xIndex = 0; xIndex < width; xIndex++) {
       Output.print(BasicArithmetic.intIntoTwoWide(xIndex));
     }
     Output.println();
-
+    
     for (int yIndex = 0; yIndex < height; yIndex++) {
       Output.print(BasicArithmetic.intIntoThreeWide(yIndex));
       for (int xIndex = 0; xIndex < width; xIndex++) {
@@ -545,7 +545,7 @@ class Field {
       return false;
     }
     currentCell.revealed = true;
-
+    
     if (currentCell.isMine) {
       board[position.x][position.y].exploded = true;
       return true;
@@ -577,6 +577,8 @@ class Field {
     
     int randomX = 0;
     int randomY = 0;
+    
+    // Check if null to enter the loop
     while (currentCell == null || currentCell.isMine || currentCell.neighborMines != 0) {
       randomX = BasicArithmetic.getRandomInt(width);
       randomY = BasicArithmetic.getRandomInt(height);
@@ -641,13 +643,12 @@ class GameLogic {
       if (cellWasMine) {
         playingRound = false;
         Output.println("\nyou TOUCHED a MINE!");
-
+        
         field.revealAllCells();
         field.printBoard();
         break;
       }
       
-
       if (field.isBoardCleared()) {
         Output.println("\ngoog joob");
         break;
@@ -658,12 +659,12 @@ class GameLogic {
   public void startGame() {
     double percentageOfMines = Input.askForInt("Percentage of mines? %") / 100d;
     Output.println();
-
+    
     field.attemptToAddMines((int) (percentageOfMines * field.width * field.height));
     field.calculateAllNeighbors();
     
     field.revealRandomZeroCell();
-
+    
     gameLoop();
   }
 }

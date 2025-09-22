@@ -23,7 +23,6 @@ class BudgetTracker {
 
 public class BudgetTrackerClass {
   public static void main(String[] args) {
-
     // Code
     BudgetTracker b = new BudgetTracker();
     b.addPurchase(3, 0.50);   // 3 apples, $0.50 each

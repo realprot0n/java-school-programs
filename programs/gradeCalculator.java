@@ -36,7 +36,7 @@ public class gradeCalculator {
 
     Output.println("Please enter each homework grade.");
     for (int gradeIndex = 0; gradeIndex < numOfHomeworkGrades; gradeIndex++) {
-      homeworkGrades.add(MyInput.askForInt(String.format("%d: ", gradeIndex)));
+      homeworkGrades.add(MyInput.askForInt(String.format("%d: ", gradeIndex + 1)));
     }
 
     return averageListOfInts(homeworkGrades);
@@ -57,7 +57,7 @@ public class gradeCalculator {
 
   public static void displayCourseInfo(String courseName, int[] minutesAndHours, double homeworkAverage, double quizAverage, double finalExamGrade) {
     Output.println(String.format("Course name: %s", courseName));
-    Output.println(String.format("Weekly time spent: %dh%dm", minutesAndHours[0], minutesAndHours[1]));
+    Output.println(String.format("Weekly time spent: %dh%dm", minutesAndHours[1], minutesAndHours[0]));
     Output.println(String.format("Average homework grade: %s", homeworkAverage));
     Output.println(String.format("Average quiz grade: %s", quizAverage));
     Output.println(String.format("Final exam grade: %s", finalExamGrade));
@@ -80,7 +80,6 @@ public class gradeCalculator {
     double finalExamGrade = MyInput.askForDouble("Please enter the final exam grade for this course.\n");
 
     displayCourseInfo(courseName, minutesAndHours, homeworkAverage, quizAverage, finalExamGrade);
-
   }
 }
 
