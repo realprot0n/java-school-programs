@@ -12,7 +12,7 @@ public class areParenthesesValid {
         openParenthesesCounter++;
       }
       
-      // A closing parenthesis appeared without a preceeding parenthesis.
+      // A closing parenthesis appeared without a preceeding opening parenthesis.
       if (openParenthesesCounter < 0) {
         return false;
       }
