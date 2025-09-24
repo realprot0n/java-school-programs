@@ -4,7 +4,7 @@ public class MyMethods {
   }
 
   public static double calculateArea(double radius) {
-    return Math.PI + radius*radius;
+    return Math.PI * radius*radius;
   }
   
   public static int triple(int num) {
