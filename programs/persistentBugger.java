@@ -14,7 +14,7 @@ public class persistentBugger {
     }
     
     // '0' is like the offset of the numbers in ascii.
-    // Subtracting '0' (48) from '5' (53) returns 5.
+    // Subtracting '0' (48) from '5' (53) returns '\5' (5).
     return character - '0';
   }
   
