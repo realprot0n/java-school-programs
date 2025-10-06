@@ -5,8 +5,51 @@ public class AirTrafficController {
     Airplane planeOne = new Airplane();
     Airplane planeTwo = new Airplane("AAA02", 15.8d, 30_000d, new Degrees(128d));
     Airplane planeThree = Airplane.getAirplaneFromUser();
+
+    Output.println("Initial Positions:");
+    Output.println(planeOne.toString());
+    Output.println(planeTwo.toString());
+    Output.println(planeThree.toString());
+    Output.println("");
     
+    Output.println("Initial Distances:");
     planeOne.printDistance(planeTwo);
+    planeOne.printDistance(planeThree);
+    planeTwo.printDistance(planeThree);
+    Output.println("");
+
+    Output.println("Initial Height Differences");
+    planeOne.printHeightDifference(planeTwo);
+    planeOne.printHeightDifference(planeThree);
+    planeTwo.printHeightDifference(planeThree);
+    Output.println("");
+
+
+    planeOne.move(planeTwo.getDist(planeThree), new Degrees(65));
+    planeTwo.move(8.0, new Degrees(135));
+    planeThree.move(5.0, new Degrees(55));
+
+    planeOne.gainAlt(3);
+    planeTwo.loseAlt(2);
+    planeThree.loseAlt(4);
+
+    Output.println("New Positions:");
+    Output.println(planeOne.toString());
+    Output.println(planeTwo.toString());
+    Output.println(planeThree.toString());
+    Output.println("");
+    
+    Output.println("New Distances:");
+    planeOne.printDistance(planeTwo);
+    planeOne.printDistance(planeThree);
+    planeTwo.printDistance(planeThree);
+    Output.println("");
+
+    Output.println("New Height Differences");
+    planeOne.printHeightDifference(planeTwo);
+    planeOne.printHeightDifference(planeThree);
+    planeTwo.printHeightDifference(planeThree);
+    Output.println("");
   }
 }
 
@@ -93,23 +136,31 @@ class Airplane {
   public void gainAlt() {
     altitude += 1000;
   }
+
+  public void gainAlt(int times) {
+    for (int index = 0; index < times; index++) {
+      gainAlt();
+    }
+  }
   
   public void loseAlt() {
     altitude -= 1000;
+  }
+
+  public void loseAlt(int times) {
+    for (int index = 0; index < times; index++) {
+      loseAlt();
+    }
   }
   
   public double getAlt() {
     return altitude;
   }
-
-  public double getAltInMiles() {
-    return altitude/5280d;
-  }
   
   @Override
   public String toString() {
-    return String.format("%s - %f miles away at bearing %d°, altitude %d feet",
-                         callSign, distance, direction.degrees, altitude);
+    return String.format("%s - %f miles away at bearing %f°, altitude %f feet",
+    callSign, distance, direction.degrees, altitude);
   }
   
   public double getDist(Airplane otherPlane) {
@@ -119,8 +170,17 @@ class Airplane {
     return Math.abs(distance - otherPlane.distance);
   }
   
+  public double getAltDifference(Airplane otherPlane) {
+    return Math.abs(altitude - otherPlane.altitude);
+  }
+  
   public void printDistance(Airplane otherPlane) {
     Output.printf("The distance between Airplane %s and Airplane %s is %.2f miles.",
                 callSign, otherPlane.callSign, getDist(otherPlane));
+  }
+
+  public void printHeightDifference(Airplane otherPlane) {
+    Output.printf("The difference in height between Airplane %s and Airplane %s is %.0f feet.",
+                  callSign, otherPlane.callSign, getAltDifference(otherPlane));
   }
 }
