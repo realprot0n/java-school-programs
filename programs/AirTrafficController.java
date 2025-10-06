@@ -101,6 +101,10 @@ class Airplane {
   public double getAlt() {
     return altitude;
   }
+
+  public double getAltInMiles() {
+    return altitude/5280d;
+  }
   
   @Override
   public String toString() {
@@ -109,6 +113,9 @@ class Airplane {
   }
   
   public double getDist(Airplane otherPlane) {
+    // i kinda have like no idea how to make it like the test run
+    // i tried to use pythagorean with the distance and altitude but it still came up short
+    // ts pmo icl 😭
     return Math.abs(distance - otherPlane.distance);
   }
   
