@@ -2,10 +2,17 @@ import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.Scanner;
 
+/*
+ * NO while or for loops : (
+ */
+
 public class UnderTerminal {
   public static void main(String[] args) {
     TheInput.initialize();
-    Player.getPlayerFromUser();
+    Item.initializeItemNames();
+    Player player = Player.getPlayerFromUser();
+    
+    player.weapon.doAttack();
   }
 }
 
@@ -55,7 +62,7 @@ class BasicArithmetic {
   }
   
   public static boolean isCharUpper(char character) {
-    return (character >= 'A' && (character <= 'Z'));
+    return ((character >= 'A') && (character <= 'Z'));
   }
   
   public static boolean isCharLower(char character) {
@@ -137,7 +144,7 @@ class TheInput {
     
     if (!BasicArithmetic.isCharInArray(returnChar, charArray)) {
       Output.println("Please input a character in the array.");
-      returnChar = getCharInArray("stem", charArray);
+      returnChar = getCharInArray(stem, charArray);
     }
     return returnChar;
   }
@@ -145,23 +152,27 @@ class TheInput {
 }
 
 class Item {
-  public static Hashtable<String, Item> itemNames = new Hashtable<String, Item>();
+  public static Hashtable<String, HealingItem> healingItems = new Hashtable<String, HealingItem>();
+  public static Hashtable<String, Armor> armors = new Hashtable<String, Armor>();
+  public static Hashtable<String, Weapon> weapons = new Hashtable<String, Weapon>();
   public String name;
   public String description;
   
   public static void initializeItemNames() {
-    itemNames.clear();
+    healingItems.clear();
+    armors.clear();
+    weapons.clear();
     
-    itemNames.put("Stick", new Weapon("Stick", "Its bark is worse than its bite.", 0));
-    itemNames.put("Toy Knife", new Weapon("Toy Knife", "Made of plastic. A rarity nowadays.", 3));
+    weapons.put("Stick", new Weapon("Stick", "Its bark is worse than its bite.", 0));
+    weapons.put("Toy Knife", new Weapon("Toy Knife", "Made of plastic. A rarity nowadays.", 3));
     
-    itemNames.put("Monster Candy", new HealingItem("Monster Candy", "Has a distinct, non-licorice flavor.", 10));
-    itemNames.put("Bandage", new HealingItem("Bandage", "It has already been used several times.", 10));
-    itemNames.put("Spider Donut", new HealingItem("Spider Donut", "A donut made with Spider Cider in the batter.", 12));
-    itemNames.put("Spider Cider", new HealingItem("Spider Cider", "Made with whole spiders, not just the juice.", 24));
+    healingItems.put("Monster Candy", new HealingItem("Monster Candy", "Has a distinct, non-licorice flavor.", 10));
+    healingItems.put("Bandage", new HealingItem("Bandage", "It has already been used several times.", 10));
+    healingItems.put("Spider Donut", new HealingItem("Spider Donut", "A donut made with Spider Cider in the batter.", 12));
+    healingItems.put("Spider Cider", new HealingItem("Spider Cider", "Made with whole spiders, not just the juice.", 24));
     
-    itemNames.put("Bandage", new Armor("Bandage", "It has already been used several times.", 0));
-    itemNames.put("Faded Ribbon", new Armor("Faded Ribbon", "If you're cuter, monsters won't hit you as hard.", 3));
+    armors.put("Bandage", new Armor("Bandage", "It has already been used several times.", 0));
+    armors.put("Faded Ribbon", new Armor("Faded Ribbon", "If you're cuter, monsters won't hit you as hard.", 3));
   }
   
   public Item(String name, String description) {
@@ -191,6 +202,37 @@ class Weapon extends Item {
     super(name, String.format("Weapon, AT %d. %s", damage, description));
     this.damage = damage;
   }
+  
+  private int doStickAttack() {
+    Output.println("Try to get as close to 1 second as possible.");
+    long startTime = System.currentTimeMillis();
+    TheInput.getString("Press enter after 1 second!!");
+    long endTime = System.currentTimeMillis();
+    double score = 1+((-Math.abs(1000+startTime-endTime))/1000.0);
+    Output.printf("You took %d seconds...", score);
+    if (score > .9) {
+      return 5;
+    } else if (score > .7) {
+      return 4;
+    } else if (score > .5) {
+      return 3;
+    } else if (score > .25) {
+      return 2;
+    } else if (score > 0) {
+      return 1;
+    } else {
+      return 0;
+    }
+  }
+  
+  public int doAttack() {
+    switch (name) {
+      case "Stick":
+        return doStickAttack();
+      default:
+        return -1;
+    }
+  }
 }
 
 class Armor extends Item {
@@ -210,11 +252,21 @@ class Player {
   public int love;
   public int gold;
   public Item[] inventory;
-
+  public Armor armor;
+  public Weapon weapon;
+  
   public Player(String name, int maxHealth) {
     this.name = name;
     this.maxHealth = maxHealth;
+    health = maxHealth;
+    exp = 0;
+    love = 0;
+    gold = 0;
+    inventory = new Item[8];
+    armor = Item.armors.get("Bandage");
+    weapon = Item.weapons.get("Stick");
   }
+  
   /*
    * Gets the response to a given name in the name select screen.
    * A Y as the first char means it is allowed, an N means it's not.
