@@ -100,7 +100,7 @@ class TheInput {
     if (scanner == null) {
       return -1;
     }
-    Output.print(stem);
+    TheOutput.print(stem);
     int userInput = scanner.nextInt();
     scanner.nextLine();
     return userInput;
@@ -112,7 +112,7 @@ class TheInput {
     }
     int userInput = askForInt(stem);
     if (userInput < lower || userInput > higher) {
-      Output.printf("Your input must be be between %d and %d. Input your option again.",
+      TheOutput.printf("Your input must be be between %d and %d. Input your option again.",
                     lower, higher);
       userInput = askForIntInRange(stem, lower, higher);
     }
@@ -124,7 +124,7 @@ class TheInput {
       return null;
     }
     
-    Output.print(stem);
+    TheOutput.print(stem);
     return scanner.nextLine();
   }
   
@@ -143,7 +143,7 @@ class TheInput {
     returnChar = getChar(stem + " " +  Arrays.toString(charArray) + " ");
     
     if (!BasicArithmetic.isCharInArray(returnChar, charArray)) {
-      Output.println("Please input a character in the array.");
+      TheOutput.println("Please input a character in the array.");
       returnChar = getCharInArray(stem, charArray);
     }
     return returnChar;
@@ -165,6 +165,7 @@ class Item {
     
     weapons.put("Stick", new Weapon("Stick", "Its bark is worse than its bite.", 0));
     weapons.put("Toy Knife", new Weapon("Toy Knife", "Made of plastic. A rarity nowadays.", 3));
+    weapons.put("Tough Glove", new Weapon("Tough Glove", "A worn pink leather glove. For five-fingered folk.", 5));
     
     healingItems.put("Monster Candy", new HealingItem("Monster Candy", "Has a distinct, non-licorice flavor.", 10));
     healingItems.put("Bandage", new HealingItem("Bandage", "It has already been used several times.", 10));
@@ -204,12 +205,12 @@ class Weapon extends Item {
   }
   
   private int doStickAttack() {
-    Output.println("Try to get as close to 1 second as possible.");
+    TheOutput.println("Try to get as close to 1 second as possible.");
     long startTime = System.currentTimeMillis();
     TheInput.getString("Press enter after 1 second!!");
     long endTime = System.currentTimeMillis();
     double score = 1+((-Math.abs(1000+startTime-endTime))/1000.0);
-    Output.printf("You took %d seconds...", score);
+    TheOutput.printf("You took %d seconds...", score);
     if (score > .9) {
       return 5;
     } else if (score > .7) {
@@ -225,10 +226,33 @@ class Weapon extends Item {
     }
   }
   
+  static int hitNum;
+  private double boxingGloveRecursion(int hits, double startTime) {
+    final double endTime = 1d;
+    if (startTime < (System.currentTimeMillis() - (endTime * 1000))) {
+      hitNum = hits;
+      return 0;
+    }
+    TheInput.getString("Press enter to do a hit!");
+    return boxingGloveRecursion(hits+1, startTime) + (4.0/(hits + 1));
+  }
+
+  private int doBoxingGloveAttack() {
+    double startTime = System.currentTimeMillis();
+    double damage = boxingGloveRecursion(0, startTime);
+    TheOutput.printf("You hit the enemy %d times, and dealt %f damage.", hitNum, damage);
+    return (int) Math.ceil(damage);
+  }
+
   public int doAttack() {
+    TheInput.getString("Press enter to start your attack.");
     switch (name) {
       case "Stick":
         return doStickAttack();
+      case "Toy Knife":
+        return -1;
+      case "Tough Glove":
+        return doBoxingGloveAttack();
       default:
         return -1;
     }
@@ -264,7 +288,7 @@ class Player {
     gold = 0;
     inventory = new Item[8];
     armor = Item.armors.get("Bandage");
-    weapon = Item.weapons.get("Stick");
+    weapon = Item.weapons.get("Tough Glove");
   }
   
   /*
@@ -335,10 +359,13 @@ class Player {
     String response = getNameResponse(givenName);
     
     if (response.toCharArray()[0] == 'N') {
-      Output.println(response.substring(1) + "\n");
+      TheOutput.println(response.substring(1) + "\n");
+      givenName = getPlayerName();
+    } else if (givenName.length() > 6) {
+      TheOutput.println("Your name cannot be longer than six characters.\n");
       givenName = getPlayerName();
     } else if (response.toCharArray()[0] == 'Y') {
-      Output.println(response.substring(1));
+      TheOutput.println(response.substring(1));
       char userApproval = TheInput.getCharInArray("Is this your name? (Yes or No)", new char[] {'Y', 'y', 'N', 'n'});
       if (BasicArithmetic.makeCharUpper(userApproval) == 'N') {
         givenName = getPlayerName();
@@ -353,7 +380,7 @@ class Player {
   }
 }
 
-class Output {
+class TheOutput {
   public static void println(Object obj) {
     System.out.println(obj);
   }
