@@ -131,6 +131,9 @@ class TheInput {
   public static char getChar(String stem) {
     String userResponse = TheInput.getString(stem);
     
+    if (userResponse.length() == 0) {
+      return '\0';
+    } 
     return userResponse.toCharArray()[0];
   }
   
@@ -298,7 +301,7 @@ class Player {
   private static String getNameResponse(String givenName) {
     givenName = givenName.toLowerCase();
     switch (givenName) {
-      case "aaaaaa":
+      case "aaaaaa": case "aaaaa": case "aaaa": case "aaa": case "aa": case "a":
         return "YNot very creative..?";
       case "alphy":
         return "YUh... OK?";
@@ -308,16 +311,14 @@ class Player {
         return "YLike, OK, I guess.";
       case "chara":
         return "YThe true name.";
-      case "gerson":
+      case "gerson": case "oldman":
         return "YWah ha ha! Why not?";
       case "jerry":
         return "YJerry.";
-      case "mercy":
-      case "murder":
+      case "mercy": case "spare": case "paci": case "pacifi":
+      case "murder": case "murd": case "kill": case "geno": case "genoci":
         return "YThat's a little on-the-nose, isn't it...?";
-      case "mett":
-      case "metta":
-      case "mtt":
+      case "mett": case "metta": case "mtt":
         return "YOOOOH!!! ARE YOU PROMOTING MY BRAND?";
       case "blooky":
       case "napsta":
@@ -326,7 +327,7 @@ class Player {
         return "YI'LL ALLOW IT!!!!";
       case "shyren":
         return "Y...?";
-      case "temmie":
+      case "temmie": case "temm":
         return "YhOI!";
       case "woshua":
         return "YClean name.";
@@ -361,9 +362,11 @@ class Player {
     if (response.toCharArray()[0] == 'N') {
       TheOutput.println(response.substring(1) + "\n");
       givenName = getPlayerName();
+    
     } else if (givenName.length() > 6) {
       TheOutput.println("Your name cannot be longer than six characters.\n");
       givenName = getPlayerName();
+    
     } else if (response.toCharArray()[0] == 'Y') {
       TheOutput.println(response.substring(1));
       char userApproval = TheInput.getCharInArray("Is this your name? (Yes or No)", new char[] {'Y', 'y', 'N', 'n'});

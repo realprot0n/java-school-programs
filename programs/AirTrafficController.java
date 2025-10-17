@@ -6,23 +6,23 @@ public class AirTrafficController {
     Airplane planeTwo = new Airplane("AAA02", 15.8d, 30_000d, new Degrees(128d));
     Airplane planeThree = Airplane.getAirplaneFromUser();
 
-    Output.println("Initial Positions:");
-    Output.println(planeOne.toString());
-    Output.println(planeTwo.toString());
-    Output.println(planeThree.toString());
-    Output.println("");
+    TheOutput.println("Initial Positions:");
+    TheOutput.println(planeOne.toString());
+    TheOutput.println(planeTwo.toString());
+    TheOutput.println(planeThree.toString());
+    TheOutput.println("");
     
-    Output.println("Initial Distances:");
+    TheOutput.println("Initial Distances:");
     planeOne.printDistance(planeTwo);
     planeOne.printDistance(planeThree);
     planeTwo.printDistance(planeThree);
-    Output.println("");
+    TheOutput.println("");
 
-    Output.println("Initial Height Differences");
+    TheOutput.println("Initial Height Differences");
     planeOne.printHeightDifference(planeTwo);
     planeOne.printHeightDifference(planeThree);
     planeTwo.printHeightDifference(planeThree);
-    Output.println("");
+    TheOutput.println("");
 
 
     planeOne.move(planeTwo.getDist(planeThree), new Degrees(65));
@@ -33,27 +33,27 @@ public class AirTrafficController {
     planeTwo.loseAlt(2);
     planeThree.loseAlt(4);
 
-    Output.println("New Positions:");
-    Output.println(planeOne.toString());
-    Output.println(planeTwo.toString());
-    Output.println(planeThree.toString());
-    Output.println("");
+    TheOutput.println("New Positions:");
+    TheOutput.println(planeOne.toString());
+    TheOutput.println(planeTwo.toString());
+    TheOutput.println(planeThree.toString());
+    TheOutput.println("");
     
-    Output.println("New Distances:");
+    TheOutput.println("New Distances:");
     planeOne.printDistance(planeTwo);
     planeOne.printDistance(planeThree);
     planeTwo.printDistance(planeThree);
-    Output.println("");
+    TheOutput.println("");
 
-    Output.println("New Height Differences");
+    TheOutput.println("New Height Differences");
     planeOne.printHeightDifference(planeTwo);
     planeOne.printHeightDifference(planeThree);
     planeTwo.printHeightDifference(planeThree);
-    Output.println("");
+    TheOutput.println("");
   }
 }
 
-class Output {
+class TheOutput {
   public static void println(Object obj) {
     System.out.println(obj);
   }
@@ -116,7 +116,7 @@ class Airplane {
   public static Airplane getAirplaneFromUser() {
     Scanner scanner = new Scanner(System.in);
     
-    Output.println("Enter the details of the third airplane (call-sign, distance, altitude, bearing):");
+    TheOutput.println("Enter the details of the third airplane (call-sign, distance, altitude, bearing):");
     Airplane returnAirplane = new Airplane(
                     scanner.nextLine().toUpperCase(),
                     Double.parseDouble(scanner.nextLine()),
@@ -175,12 +175,12 @@ class Airplane {
   }
   
   public void printDistance(Airplane otherPlane) {
-    Output.printf("The distance between Airplane %s and Airplane %s is %.2f miles.",
+    TheOutput.printf("The distance between Airplane %s and Airplane %s is %.2f miles.",
                 callSign, otherPlane.callSign, getDist(otherPlane));
   }
 
   public void printHeightDifference(Airplane otherPlane) {
-    Output.printf("The difference in height between Airplane %s and Airplane %s is %.0f feet.",
+    TheOutput.printf("The difference in height between Airplane %s and Airplane %s is %.0f feet.",
                   callSign, otherPlane.callSign, getAltDifference(otherPlane));
   }
 }
