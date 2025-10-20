@@ -1,6 +1,8 @@
 import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.Scanner;
+import java.io.File;
+import java.io.IOException;
 
 /*
  * NO while or for loops : (
@@ -10,6 +12,7 @@ public class UnderTerminal {
   public static void main(String[] args) {
     TheInput.initialize();
     Item.initializeItemNames();
+    SaveFile.initializeSaveFile();
     Player player = Player.getPlayerFromUser();
     
     player.weapon.doAttack();
@@ -154,6 +157,29 @@ class TheInput {
   
 }
 
+class SaveFile {
+  static final String FILE_PATH = "save.json";
+  static File saveFile;
+
+  /*
+   * Returns True if the file already exists, false if it has to create it.
+   */
+  public static boolean initializeSaveFile() {
+    try {
+      saveFile = new File(FILE_PATH);
+      if (saveFile.exists()) {
+        TheOutput.println("Save file already exists,");
+      } else {
+        saveFile.createNewFile();
+      }
+    } catch (IOException e) {
+      TheOutput.println("An error occured.");
+      e.printStackTrace();
+    }
+    return true;
+  }
+}
+
 class Item {
   public static Hashtable<String, HealingItem> healingItems = new Hashtable<String, HealingItem>();
   public static Hashtable<String, Armor> armors = new Hashtable<String, Armor>();
@@ -230,19 +256,19 @@ class Weapon extends Item {
   }
   
   static int hitNum;
-  private double boxingGloveRecursion(int hits, double startTime) {
+  private double tuffGloveRecursion(int hits, double startTime) {
     final double endTime = 1d;
     if (startTime < (System.currentTimeMillis() - (endTime * 1000))) {
       hitNum = hits;
       return 0;
     }
     TheInput.getString("Press enter to do a hit!");
-    return boxingGloveRecursion(hits+1, startTime) + (4.0/(hits + 1));
+    return tuffGloveRecursion(hits+1, startTime) + (4.0/(hits + 1));
   }
 
-  private int doBoxingGloveAttack() {
+  private int doTuffGloveAttack() {
     double startTime = System.currentTimeMillis();
-    double damage = boxingGloveRecursion(0, startTime);
+    double damage = tuffGloveRecursion(0, startTime);
     TheOutput.printf("You hit the enemy %d times, and dealt %f damage.", hitNum, damage);
     return (int) Math.ceil(damage);
   }
@@ -255,7 +281,7 @@ class Weapon extends Item {
       case "Toy Knife":
         return -1;
       case "Tough Glove":
-        return doBoxingGloveAttack();
+        return doTuffGloveAttack();
       default:
         return -1;
     }
@@ -369,7 +395,7 @@ class Player {
     
     } else if (response.toCharArray()[0] == 'Y') {
       TheOutput.println(response.substring(1));
-      char userApproval = TheInput.getCharInArray("Is this your name? (Yes or No)", new char[] {'Y', 'y', 'N', 'n'});
+      char userApproval = TheInput.getCharInArray("Accept name? (Yes or No)", new char[] {'Y', 'y', 'N', 'n'});
       if (BasicArithmetic.makeCharUpper(userApproval) == 'N') {
         givenName = getPlayerName();
       }

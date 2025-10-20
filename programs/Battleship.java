@@ -174,9 +174,9 @@ class Grid {
 
   public void printSquareAt(Positions position, boolean includeSpace) {
     char squareChar = getSquareAt(position).getAsChar();
-    TheOutput.print(squareChar);
+    Output.print(squareChar);
     if (includeSpace) {
-      TheOutput.print(' ');
+      Output.print(' ');
     }
   }
 
@@ -191,9 +191,9 @@ class Grid {
   public void printState(boolean printLabels, boolean reveal) {
   if (printLabels) {
     for (int xIndex = 0; xIndex < width; xIndex++) {
-      TheOutput.print(String.valueOf(xIndex) + " ");
+      Output.print(String.valueOf(xIndex) + " ");
     }
-    TheOutput.println();
+    Output.println();
   }
 
     for (int yIndex = 0; yIndex < height; yIndex++) {
@@ -210,9 +210,9 @@ class Grid {
       
       }
       if (printLabels) {
-        TheOutput.print(" " + rowLabels[yIndex]);
+        Output.print(" " + rowLabels[yIndex]);
       }
-      TheOutput.println();
+      Output.println();
     }
   }
 }
