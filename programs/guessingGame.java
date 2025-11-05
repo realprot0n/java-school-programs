@@ -5,7 +5,20 @@ public class guessingGame {
   public static Host host;
   
   public static String getResponseByHost(Result result) {
-    if (result == Result.Invalid) {
+    if (result == Result.PreGame) {
+      switch (host) {
+        case Normal:
+          return "Welcome to the game folks! Our daring contestant here will partake in the hardest game known to man: a guessing game!";
+        case Kyle:
+          return "welcome to the game. you are gonna play a guessing game. you better have fun or i'll, uhh, do something";
+        case Dog:
+          return "Woof woof woof woof woof, woof bark bark woof. Woof woof wood arf arf bark!";
+        case DrMario:
+          return "Hello spectators! Today we have a patient competing in a guessing game! The prize? Who knows! Now, lets-a-go!";
+        default:
+          return "pregame";
+      }
+    } else if (result == Result.Invalid) {
       switch (host) {
         case Normal:
           return "That's not a valid number. Please input your guess again!";
@@ -62,10 +75,23 @@ public class guessingGame {
           return "\n" + guessesRemaining + "\n";
       }
     }
+
+    return "unimplemented";
+  }
+  
+  private static void displayEveryResponse() {
+    for (Host hostName : Host.values()) {
+      host = hostName;
+      System.out.println(hostName.name() + ":\n");
+      for (Result currResult : Result.values()) {
+        System.out.println(getResponseByHost(currResult));
+      }
+      System.out.println();
+    }
   }
   
   public static void main(String[] args) {
-    
+    displayEveryResponse();
   }
 }
 
