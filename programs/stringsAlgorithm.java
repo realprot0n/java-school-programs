@@ -22,7 +22,7 @@ public class stringsAlgorithm {
     Scanner scan = new Scanner(System.in);
     
     println("Enter two strings:");
-
+    
     String str1 = scan.nextLine();
     String str2 = scan.nextLine();
     

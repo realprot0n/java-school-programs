@@ -42,7 +42,7 @@ public class TerminalRPG {
     
     if (choice1 == 2) {
       println("You head into the cave... And find a spiky spike that spikes you on your head." + 
-                  "\n  You lose six health.");
+                "\n  You lose six health.");
       player.health -= 6;
     } else {
       println("You enter the forest and find a treasure chest.\n  +5 gold!");
