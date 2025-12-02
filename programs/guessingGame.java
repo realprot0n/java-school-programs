@@ -117,6 +117,10 @@ public class guessingGame {
     }
   }
   
+  public void startGame() {
+    
+  }
+  
   public static void main(String[] args) {
     displayEveryResponse();
   }
