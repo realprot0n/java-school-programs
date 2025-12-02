@@ -74,17 +74,44 @@ public class guessingGame {
         default:
           return "\n" + guessesRemaining + "\n";
       }
+    } else if (result == Result.Lose) {
+      switch (host) {
+        case Normal:
+          return "Awh darn! You've ran out of guesses and lost the game. Come again soon, I'm sure you can win next time!";
+        case Kyle:
+          return "well you lost. am i suprised? no. will i stil make fun of you?? Of course!";
+        case Dog:
+          return "f. wof wof. f f f.";
+        case DrMario:
+          return "Yeeouch!! It seems ilke you have lost. Unfortunately, or perhaps fortunately, we have to take your liver now. Bye bye!";
+        default:
+          return "Lose";
+      }
+    } else if (result == Result.Win) {
+      switch (host) {
+        case Normal:
+          return "You did it! You guessed the number! Well done! Your prize is one MILLION dollars!! (taxes still applied) Come back again soon!";
+        case Kyle:
+          return "wow, i didnt expect you to actually win. good job brah";
+        case Dog:
+          return "WOOOOF!!! WOOF WOOF!! woof wof. wow wow.";
+        case DrMario:
+          return "Wowzers! you've won the guessing game! What's that? You wanna know your prize? Its not getting your liver taken! Okay, now bye bye! And you BETTER not try to sue me.";
+        default:
+          return "Win";
+      }
     }
 
     return "unimplemented";
   }
   
+  // for testing fr fr
   private static void displayEveryResponse() {
     for (Host hostName : Host.values()) {
       host = hostName;
       System.out.println(hostName.name() + ":\n");
       for (Result currResult : Result.values()) {
-        System.out.println(getResponseByHost(currResult));
+        System.out.println(currResult.name() + ": " + getResponseByHost(currResult));
       }
       System.out.println();
     }
@@ -106,7 +133,6 @@ enum Result {
   PreGame,
   TooHigh,
   TooLow,
-  Perfect,
   Invalid,
   GuessesRemaining,
   Lose,
