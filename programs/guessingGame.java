@@ -1,10 +1,39 @@
+import java.util.Scanner;
+
 public class guessingGame {
-  private static int secretNumber;
-  public static int guess;
-  public static int guessesRemaining = 10;
-  public static Host host;
+  private int secretNumber;
+  public int guess;
+  public int guessesRemaining = 10;
+  public Host host;
   
-  public static String getResponseByHost(Result result) {
+  private Scanner scanner;
+  
+  private void print(Object obj) {
+    System.out.print(obj);
+  }
+  
+  private void println(Object obj) {
+    System.out.println(obj);
+  }
+  
+  private void initScanner(Scanner scan) {
+    if (scan == null) {
+      scan = new Scanner(System.in);
+    }
+    scanner = scan;
+  }
+  
+  public int askForInt(String stem) {
+    if (scanner == null) {
+      return -1;
+    }
+    print(stem);
+    int userInput = scanner.nextInt();
+    scanner.nextLine();
+    return userInput;
+  }
+  
+  public String getResponseByHost(Result result) {
     if (result == Result.PreGame) {
       switch (host) {
         case Normal:
@@ -70,45 +99,142 @@ public class guessingGame {
           }
           return retString + ".\n";
         case DrMario:
-          return "It has approximately " + guessesRemaining + " days to live.\n";
+          return "Your guess has approximately " + guessesRemaining + " days to live.\n";
         default:
           return "\n" + guessesRemaining + "\n";
       }
+    } else if (result == Result.Lose) {
+      switch (host) {
+        case Normal:
+          return "Awh darn! You've ran out of guesses and lost the game. The secret number you so desperately needed was " + secretNumber + ". Come again soon, I'm sure you can win next time!";
+        case Kyle:
+          return "well you lost. am i suprised? no. will i stil make fun of you?? of course! the secret number was " + secretNumber + ".";
+        case Dog:
+          return "f. wof wof. f f f. (" + secretNumber + ")";
+        case DrMario:
+          return "Yeeouch!! It seems like you have lost. Unfortunately, or perhaps fortunately, we have to take your liver now. Bye bye! (the number was " + secretNumber + ")";
+        default:
+          return "Lose";
+      }
+    } else if (result == Result.Win) {
+      switch (host) {
+        case Normal:
+          return "You did it! You guessed the number! Well done! Your prize is one MILLION dollars!! (taxes still applied) Come back again soon!";
+        case Kyle:
+          return "wow, i didnt expect you to actually win. good job brah";
+        case Dog:
+          return "WOOOOF!!! WOOF WOOF!! woof wof. wow wow.";
+        case DrMario:
+          return "Wowzers! you've won the guessing game! What's that? You wanna know your prize? Its not getting your liver taken! Okay, now bye bye! And you BETTER not try to sue me.";
+        default:
+          return "Win";
+      }
     }
-
+    
     return "unimplemented";
   }
   
-  private static void displayEveryResponse() {
-    for (Host hostName : Host.values()) {
-      host = hostName;
-      System.out.println(hostName.name() + ":\n");
-      for (Result currResult : Result.values()) {
-        System.out.println(getResponseByHost(currResult));
-      }
-      System.out.println();
+  public void generateNumber(int lowerBound, int upperBound) {
+    secretNumber = (int) (lowerBound + (Math.random() * (upperBound + 1)));
+  }
+  
+  private void selectHost() {
+    println("Welcome to the game! We have a broad(ish) selection of hosts for you today!\nYou can choose from one of them, here they are!\n");
+    Host.printHosts();
+    host = Host.fromInt(askForInt("\nWhich host do you want? (input the number next to their name)\n"));
+  }
+  
+  private void finishGame() {
+    if (guess == secretNumber) {
+      println("\n" + getResponseByHost(Result.Win));
+    } else {
+      println("\n" + getResponseByHost(Result.Lose));
     }
   }
   
+  private void gameLoop() {
+    while (guess != secretNumber && guessesRemaining > 0) {
+      println(getResponseByHost(Result.GuessesRemaining));
+      guess = askForInt("");
+      
+      Result guessResult = Result.getResult(secretNumber, guess);
+      
+      if (guessResult == Result.Win) {
+        break;
+      }
+      
+      print(getResponseByHost(guessResult));
+      
+      guessesRemaining -= 1;
+    }
+    
+    finishGame();
+  }
+  
+  public void startGame() {
+    initScanner(null);
+    selectHost();
+    
+    generateNumber(0, 100);
+    println(getResponseByHost(Result.PreGame));
+    gameLoop();
+  }
+  
   public static void main(String[] args) {
-    displayEveryResponse();
+    guessingGame game = new guessingGame();
+    game.startGame();
   }
 }
 
 enum Host {
-  Normal,
-  Kyle,
-  DrMario,
-  Dog
+  Normal(0),
+  Kyle(1),
+  DrMario(2),
+  Dog(3);
+  
+  public int toInt; 
+  private Host(int intVal) {
+    toInt = intVal;
+  }
+
+  public static void printHosts() {
+    for (Host currHost : Host.values()) {
+      System.out.println(String.valueOf(currHost.toInt) + ": " + currHost.toString());
+    }
+  }
+  
+  public static Host fromInt(int hostNum) {
+    switch (hostNum) {
+      case 0:
+        return Normal;
+      case 1:
+        return Kyle;
+      case 2:
+        return DrMario;
+      case 3:
+        return Dog;
+      default:
+        return Normal;
+    }
+  }
 }
 
 enum Result {
   PreGame,
   TooHigh,
   TooLow,
-  Perfect,
   Invalid,
   GuessesRemaining,
   Lose,
-  Win
+  Win;
+
+  public static Result getResult(int actualNumb, int triedNum) {
+    if (triedNum == actualNumb) {
+      return Win;
+    } else if (triedNum > actualNumb) {
+      return TooHigh;
+    } else {
+      return TooLow;
+    }
+  }
 }
