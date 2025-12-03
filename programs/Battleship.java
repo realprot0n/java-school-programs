@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
 
-enum Direction {
+enum Directioneth {
   LEFT,
   UP,
   RIGHT,
@@ -43,33 +43,33 @@ class Positions {
     return new Positions(-1, -1);
   }
 
-  public Positions addDirection(Direction direction) {
+  public Positions addDirection(Directioneth direction) {
     return addDirection(direction, 1);
   }
 
-  public Positions addDirection(Direction direction, int amount) {
+  public Positions addDirection(Directioneth direction, int amount) {
     return addDirection(direction, amount, new Positions(x, y));
   }
   
-  public Positions addDirection(Direction direction, int amount, Positions position) {
-    if (direction.equals(Direction.LEFT)) {
+  public Positions addDirection(Directioneth direction, int amount, Positions position) {
+    if (direction.equals(Directioneth.LEFT)) {
       position.x -= amount;
-    } else if (direction.equals(Direction.RIGHT)) {
+    } else if (direction.equals(Directioneth.RIGHT)) {
       position.x += amount;
-    } else if (direction.equals(Direction.UP)) {
+    } else if (direction.equals(Directioneth.UP)) {
       position.y += amount;
-    } else if (direction.equals(Direction.DOWN)) {
+    } else if (direction.equals(Directioneth.DOWN)) {
       position.y -= amount;
     }
 
     return position;
   }
 
-  public void addDirectionToSelf(Direction direction) {
+  public void addDirectionToSelf(Directioneth direction) {
     addDirectionToSelf(direction, 1);
   }
 
-  public void addDirectionToSelf(Direction direction, int amount) {
+  public void addDirectionToSelf(Directioneth direction, int amount) {
     Positions newPosition = addDirection(direction, amount, new Positions(x, y));
     x = newPosition.x;
     y = newPosition.y;
@@ -119,7 +119,7 @@ class GridSquare {
 class Ship {
   
   public int length;
-  public Direction direction;
+  public Directioneth direction;
   public String name;
   public Positions position;
   public int shipID;

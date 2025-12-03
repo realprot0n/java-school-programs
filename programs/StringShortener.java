@@ -116,7 +116,7 @@ public class StringShortener {
 
   
   private static void testAlgorithmTwo(String input) {
-    println("Algorithm One");
+    println("Algorithm Two");
     String result = applyAlgorithmTwo(input);
     println(String.format("Unique characters found: %d",
                           charAmounts.size()
