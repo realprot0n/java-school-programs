@@ -13,9 +13,9 @@ public class UnderTerminal {
     TheInput.initialize();
     Item.initializeItemNames();
     SaveFile.initializeSaveFile();
-    Player player = Player.getPlayerFromUser();
+    UndertalePlayer UndertalePlayer = UndertalePlayer.getPlayerFromUser();
     
-    player.weapon.doAttack();
+    UndertalePlayer.weapon.doAttack();
   }
 }
 
@@ -297,7 +297,7 @@ class Armor extends Item {
   }
 }
 
-class Player {
+class UndertalePlayer {
   public String name;
   public int health;
   public int maxHealth;
@@ -308,7 +308,7 @@ class Player {
   public Armor armor;
   public Weapon weapon;
   
-  public Player(String name, int maxHealth) {
+  public UndertalePlayer(String name, int maxHealth) {
     this.name = name;
     this.maxHealth = maxHealth;
     health = maxHealth;
@@ -404,8 +404,8 @@ class Player {
     return givenName;
   }
   
-  public static Player getPlayerFromUser() {
-    return new Player(getPlayerName(), 20);
+  public static UndertalePlayer getPlayerFromUser() {
+    return new UndertalePlayer(getPlayerName(), 20);
   }
 }
 

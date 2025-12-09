@@ -33,7 +33,7 @@ public class TerminalRPG {
 
   public static void main(String[] args) {
     scan = new Scanner(System.in);
-    Player player = new Player();
+    _Player player = new _Player();
 
     player.printIntro();
     
@@ -67,12 +67,12 @@ public class TerminalRPG {
   }
 }
 
-class Player {
+class _Player {
   String name;
   int health;
   int gold;
 
-  public Player() {
+  public _Player() {
     this.name = TerminalRPG.askForStr("Enter your hero's name: ");
     this.health = 10;
     this.gold = 0;

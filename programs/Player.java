@@ -1,7 +1,7 @@
 public class Player {
   private static int numPlayers = 0;
   private Vector3i position;
-  private Direction direction;
+  private Direction6 direction;
   private int health;
   private String name;
   
@@ -29,14 +29,14 @@ public class Player {
     this.name = name;
     position = new Vector3i(x, y, z);
     this.health = health;
-    this.direction = Direction.fromInt(direction);
-    if (this.direction == Direction.Unknown) {
-      System.err.println("Invalid direction passed to player constructor. It has defaulted to Direction.Unknown.");
+    this.direction = Direction6.fromInt(direction);
+    if (this.direction == Direction6.Unknown) {
+      System.err.println("Invalid direction passed to player constructor. It has defaulted to Direction6.Unknown.");
     }
     numPlayers += 1;
   }
   
-  public int getNumPlayers() {
+  public static int getNumPlayers() {
     return numPlayers;
   }
   
@@ -45,7 +45,7 @@ public class Player {
   }
   
   public int getX() {
-    return position.x;
+    return position.x;    
   }
   
   public int getY() {
@@ -56,6 +56,10 @@ public class Player {
     return position.z;
   }
   
+  public String getPositionString() {
+    return position.toString();
+  }
+  
   public int getHP() {
     return health;
   }
@@ -64,6 +68,7 @@ public class Player {
     return direction.asInt;
   }
   
+  @Override
   public String toString() {
     return String.format(
       "Name: %s\nHealth: %d\nCoordinates: %s\nDirection: %d\n",
@@ -80,23 +85,23 @@ public class Player {
   }
   
   public void setDirection(int direction) {
-    setDirection(Direction.fromInt(direction));
+    setDirection(Direction6.fromInt(direction));
   }
   
-  public void setDirection(Direction direction) {
-    if (direction == Direction.Unknown) {
+  public void setDirection(Direction6 direction) {
+    if (direction == Direction6.Unknown) {
       return; // Don't modify direction if the given direction is unknown.
     }
     
     this.direction = direction;
   }
   
-  public void move(Direction direction, int units) {
-    position.add(direction.toVector3().multiply(units));
+  public void move(Direction6 direction, int units) {
+    this.position = this.position.add(direction.toVector3().multiply(units));
   }
   
   public void move(int direction, int units) {
-    move(Direction.fromInt(direction), units);
+    move(Direction6.fromInt(direction), units);
   }
   
   public void teleport(Vector3i newPosition) {
@@ -140,10 +145,11 @@ class Vector3i {
   }
   
   public Vector3i add(Vector3i other) {
-    this.x += other.x;
-    this.y += other.y;
-    this.z += other.z;
-    return this;
+    return new Vector3i(
+      this.x + other.x,
+      this.y + other.y,
+      this.z + other.z
+    );
   }
   
   public Vector3i multiply(int factor) {
@@ -165,12 +171,19 @@ class Vector3i {
   
   public String toString() {
     return String.format(
-      "X %d Y %d Z %d"
+      "X %d Y %d Z %d",
+      x, y, z
     );
   }
 }
 
-enum Direction {
+/*
+* for some reason the program wouldn't run with this file named as just "Direction"...
+* I think its because i made another class named "Direction" in another file
+* But still it shouldn't change anything because that class was ALSO a private class
+* so enragingeth...
+*/
+enum Direction6 { 
   Unknown(-1),
   North(1),
   South(2),
@@ -181,11 +194,11 @@ enum Direction {
   
   public int asInt;
   
-  private Direction(int value) {
+  private Direction6(int value) {
     asInt = value;
   }
 
-  public static Direction fromInt(int value) {
+  public static Direction6 fromInt(int value) {
     switch (value) {
       case 1: return North;
       case 2: return South;
@@ -202,17 +215,17 @@ enum Direction {
       case Unknown:
         return new Vector3i(0, 0, 0);
       case North:
-        return new Vector3i(0, 0, 0);
+        return new Vector3i(1, 0, 0);
       case South:
-        return new Vector3i(0, 0, 0);
+        return new Vector3i(-1, 0, 0);
       case Up:
-        return new Vector3i(0, 0, 0);
+        return new Vector3i(0, 1, 0);
       case Down:
-        return new Vector3i(0, 0, 0);
+        return new Vector3i(0, -1, 0);
       case East:
-        return new Vector3i(0, 0, 0);
+        return new Vector3i(0, 0, 1);
       case West:
-        return new Vector3i(0, 0, 0);
+        return new Vector3i(0, 0, -1);
       default:
         return new Vector3i(0, 0 ,0);
     }
