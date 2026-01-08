@@ -13,9 +13,9 @@ public class UnderTerminal {
     TheInput.initialize();
     Item.initializeItemNames();
     SaveFile.initializeSaveFile();
-    UndertalePlayer UndertalePlayer = UndertalePlayer.getPlayerFromUser();
+    UndertalePlayer undertalePlayer = UndertalePlayer.getPlayerFromUser();
     
-    UndertalePlayer.weapon.doAttack();
+    undertalePlayer.weapon.doAttack();
   }
 }
 
