@@ -33,10 +33,10 @@ public class StringShortener {
     return false;
   }
   
+  private static Character[] vowels = {'a', 'A', 'e', 'E', 'i', 'I', 'o', 'O', 'u', 'U'};
   /*
   * If the char is a vowel and it doesn't come at the start of the word, this returns a null character. Otherwise, it returns the given char.
   */
-  private static Character[] vowels = {'a', 'A', 'e', 'E', 'i', 'I', 'o', 'O', 'u', 'U'};
   private static Character getCharIfNotVowel(Character character, int charIndexInWord) {
     if (charIndexInWord == 0) {
       return character;
@@ -53,7 +53,7 @@ public class StringShortener {
     vowelsRemovedAlgorithmOne = 0;
     repeatsRemovedAlgorithmOne = 0;
     String retString = "";
-    String[] words = string.split("\s+");
+    String[] words = string.split(" ");
 
     for (String word : words) {
       Character lastChar = '\0';
@@ -91,7 +91,7 @@ public class StringShortener {
     inputStr = inputStr.toLowerCase();
     charAmounts.clear();
     for (Character character : inputStr.toCharArray()) {
-      if (character.toString().matches("\s+")) {
+      if (character.toString().matches(" ")) {
         continue;
       }
       
