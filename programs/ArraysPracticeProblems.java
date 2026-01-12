@@ -192,5 +192,6 @@ public class ArraysPracticeProblems {
     System.out.println();
     
     reverseArrayGroupsDebug(new Integer[] {1, 2, 3, 4, 5}, 3);
+    reverseArrayGroupsDebug(new Integer[] {5, 6, 8, 9}, 5); 
   }
 }
