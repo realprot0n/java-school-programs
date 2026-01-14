@@ -1,4 +1,5 @@
 import java.util.Scanner;
+
 public class RandomDice {
   public static int rollDie(int sides) {
     return (int) (Math.random() * sides) + 1;
