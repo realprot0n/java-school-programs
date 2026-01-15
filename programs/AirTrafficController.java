@@ -178,7 +178,7 @@ class Airplane {
     TheOutput.printf("The distance between Airplane %s and Airplane %s is %.2f miles.",
                 callSign, otherPlane.callSign, getDist(otherPlane));
   }
-
+  
   public void printHeightDifference(Airplane otherPlane) {
     TheOutput.printf("The difference in height between Airplane %s and Airplane %s is %.0f feet.",
                   callSign, otherPlane.callSign, getAltDifference(otherPlane));

@@ -16,12 +16,12 @@ public class StringAssignmentTwo {
     
     String hello = helloWorld.substring(0, 5);
     String world = helloWorld.substring(5);
-
+    
     printf("First part: %s", hello);
     printf("Second part: %s", world);
-
+    
     String newHelloWorld = hello + " " + world;
-
+    
     printf("New string: %s", newHelloWorld);
   }
 }
