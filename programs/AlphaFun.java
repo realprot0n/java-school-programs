@@ -18,10 +18,13 @@ public class AlphaFun {
     });
   }
   
-  public static void strsToAlphaFun(String[] strings) {
+  public static String[] strsToAlphaFun(String[] strings) {
+    String[] retArray = new String[strings.length];
     for (int index = 0; index < strings.length; index++) {
-      strings[index] = strToAlphaFun(strings[index]);
+      retArray[index] = strToAlphaFun(strings[index]);
     }
+    
+    return retArray;
   }
   
   public static String[] readStringArr(Scanner scan) {
@@ -41,7 +44,7 @@ public class AlphaFun {
     
     System.out.println(Arrays.toString(strings));
     
-    strsToAlphaFun(strings);
+    String[] alphaFuns = strsToAlphaFun(strings);
     
     System.out.println(Arrays.toString(strings));
   }
