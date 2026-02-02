@@ -100,17 +100,45 @@ public class StudentStatsArray {
       }
     }
     return -1;
+  } 
+  
+  private boolean sortedAscending() {
+    for (int index = 1; index < students.length; index++) {
+      if (students[index-1].getGPA() > students[index].getGPA()) {
+        return false;
+      }
+    }
+    return true;
+  }
+  
+  private boolean sortedDescending() {
+    for (int index = 1; index < students.length; index++) {
+      if (students[index-1].getGPA() < students[index].getGPA()) {
+        return false;
+      }
+    }
+    return true;
+  }
+  
+  private boolean equalGPAs() {
+    for (int index = 1; index < students.length; index++) {
+      if (students[index-1].getGPA() != students[index].getGPA()) {
+        return false;
+      }
+    }
+    return true;
   }
   
   public int sortStatus() {
-    double previousGPA = Student.MIN_GPA;
-    for (Student student : students) {
-      if (student.getGPA() < previousGPA) {
-        return -1;
-      }
-      previousGPA = student.getGPA();
+    if (sortedAscending()) {
+      return 1;
+    } else if (sortedDescending()) {
+      return -1;
+    } else if (equalGPAs()) {
+      return 1;
     }
-    return 1;
+      
+    return 0;
   }
   
   @Override
